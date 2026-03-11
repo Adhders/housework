@@ -355,6 +355,11 @@
   color: white;
 }
 
+.share-btn {
+  background: #07C160;
+  color: white;
+}
+
 /* 空状态 */
 .empty-state {
   display: flex;

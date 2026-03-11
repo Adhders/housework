@@ -142,6 +142,17 @@
         >
           立即抢单
         </button>
+
+        <!-- 分享给好友按钮 -->
+        <button
+          class="action-btn share-btn"
+          size="mini"
+          open-type="share"
+          data-order="{{item}}"
+          bindtap="onShareBtnTap"
+        >
+          📤 分享
+        </button>
       </view>
     </view>
   </view>

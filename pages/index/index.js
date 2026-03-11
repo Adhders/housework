@@ -452,6 +452,9 @@ Page({
     });
   },
 
+  // 阻止事件冒泡（供 catchtap 绑定使用）
+  stopPropagation() {},
+
   // 拨打电话
   makeCall(e) {
     const phone = e.currentTarget.dataset.phone;
@@ -470,5 +473,40 @@ Page({
   hidePhone(phone) {
     if (!phone || phone.length < 11) return phone;
     return phone.substring(0, 3) + '****' + phone.substring(7);
+  },
+
+  // 记录当前要分享的订单（用于 onShareAppMessage 获取）
+  onShareBtnTap(e) {
+    // 将点击的订单存储，供 onShareAppMessage 使用
+    this._shareOrder = e.currentTarget.dataset.order;
+  },
+
+  // 微信转发分享（右上角菜单 & 分享按钮均会触发）
+  onShareAppMessage(res) {
+    let order = null;
+
+    if (res.from === 'button' && this._shareOrder) {
+      // 来自页面内分享按钮
+      order = this._shareOrder;
+      this._shareOrder = null;
+    }
+
+    if (order) {
+      // 构造分享标题：服务类型 + 价格 + 地址简要
+      const title = `【家政招单】${order.serviceTypeName}｜¥${order.price}｜${order.city || ''}`;
+      const desc = order.address ? order.address.substring(0, 20) : '';
+      return {
+        title: title + (desc ? `\n📍${desc}` : ''),
+        path: `/pages/orderDetail/orderDetail?id=${order.orderId}`,
+        imageUrl: '' // 留空使用小程序默认截图，也可替换为自定义图片路径
+      };
+    }
+
+    // 默认分享整个首页
+    return {
+      title: '家政服务招单 — 快来抢单！',
+      path: '/pages/index/index',
+      imageUrl: ''
+    };
   }
 });
