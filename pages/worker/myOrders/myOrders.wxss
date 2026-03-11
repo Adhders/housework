@@ -1,0 +1,180 @@
+/* pages/worker/myOrders/myOrders.wxss */
+.filter-bar {
+  display: flex;
+  background: white;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 8rpx;
+  transition: all 0.3s;
+}
+
+.filter-item.active {
+  background: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.order-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.order-left {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.order-type {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-right {
+  text-align: right;
+}
+
+.order-price {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #f44336;
+  margin-bottom: 8rpx;
+}
+
+.order-status {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.order-body {
+  margin-bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.order-info {
+  display: flex;
+  align-items: flex-start;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.order-info .icon {
+  margin-right: 12rpx;
+  font-size: 26rpx;
+  margin-top: 2rpx;
+}
+
+.order-info .text {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.order-footer {
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  margin-bottom: 20rpx;
+}
+
+.order-meta {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.meta-text {
+  flex: 1;
+}
+
+.order-actions {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 140rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.detail-btn {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.call-btn {
+  background: #2196F3;
+  color: white;
+}
+
+.complete-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #ccc;
+}

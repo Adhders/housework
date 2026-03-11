@@ -1,0 +1,128 @@
+<!-- pages/worker/worker.wxml -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input"
+        placeholder="搜索服务类型或地址"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+    </view>
+    <view class="filter-btn" bindtap="showFilter">
+      <text>筛选</text>
+    </view>
+  </view>
+
+  <!-- 快捷筛选 -->
+  <view class="quick-filters">
+    <view 
+      class="filter-chip {{serviceTypeFilter === 'all' ? 'active' : ''}}"
+      bindtap="filterByType"
+      data-type="all"
+    >
+      全部
+    </view>
+    <view 
+      class="filter-chip {{serviceTypeFilter === 'cleaning' ? 'active' : ''}}"
+      bindtap="filterByType"
+      data-type="cleaning"
+    >
+      日常保洁
+    </view>
+    <view 
+      class="filter-chip {{serviceTypeFilter === 'deep_clean' ? 'active' : ''}}"
+      bindtap="filterByType"
+      data-type="deep_clean"
+    >
+      深度清洁
+    </view>
+    <view 
+      class="filter-chip {{serviceTypeFilter === 'cooking' ? 'active' : ''}}"
+      bindtap="filterByType"
+      data-type="cooking"
+    >
+      做饭服务
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list">
+    <view class="order-card" wx:for="{{displayOrders}}" wx:key="orderId">
+      <view class="order-header">
+        <view class="order-left">
+          <view class="order-type">{{item.serviceTypeName}}</view>
+          <view class="order-time">{{item.serviceTime}}</view>
+        </view>
+        <view class="order-right">
+          <view class="order-price">¥{{item.price}}</view>
+          <view class="order-duration">{{item.duration}}小时</view>
+        </view>
+      </view>
+
+      <view class="order-body">
+        <view class="order-info">
+          <text class="icon">📍</text>
+          <text class="text">{{item.address}}</text>
+        </view>
+        <view class="order-info">
+          <text class="icon">👤</text>
+          <text class="text">联系人: {{item.contactName}}</text>
+        </view>
+        <view class="order-info" wx:if="{{item.requirements}}">
+          <text class="icon">📝</text>
+          <text class="text">{{item.requirements}}</text>
+        </view>
+      </view>
+
+      <view class="order-footer">
+        <button 
+          class="grab-btn"
+          bindtap="grabOrder"
+          data-id="{{item.orderId}}"
+          data-index="{{index}}"
+        >
+          立即抢单
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{displayOrders.length === 0}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无订单</text>
+    <text class="empty-hint">稍后再来看看吧</text>
+  </view>
+
+  <!-- 筛选弹窗 -->
+  <view class="filter-modal" wx:if="{{showFilterModal}}" bindtap="hideFilter">
+    <view class="filter-content" catchtap="stopPropagation">
+      <view class="filter-header">
+        <view class="filter-title">价格筛选</view>
+        <view class="filter-close" bindtap="hideFilter">✕</view>
+      </view>
+      
+      <view class="price-filter">
+        <view class="price-item {{priceFilter === 'all' ? 'active' : ''}}" bindtap="filterByPrice" data-range="all">
+          全部
+        </view>
+        <view class="price-item {{priceFilter === '0-100' ? 'active' : ''}}" bindtap="filterByPrice" data-range="0-100">
+          100元以下
+        </view>
+        <view class="price-item {{priceFilter === '100-200' ? 'active' : ''}}" bindtap="filterByPrice" data-range="100-200">
+          100-200元
+        </view>
+        <view class="price-item {{priceFilter === '200-300' ? 'active' : ''}}" bindtap="filterByPrice" data-range="200-300">
+          200-300元
+        </view>
+        <view class="price-item {{priceFilter === '300+' ? 'active' : ''}}" bindtap="filterByPrice" data-range="300+">
+          300元以上
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

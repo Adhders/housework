@@ -1,0 +1,155 @@
+<!-- pages/dispatcher/publish/publish.wxml -->
+<view class="container">
+  <form bindsubmit="handleSubmit">
+    <view class="form-section">
+      <view class="section-title">基本信息</view>
+      
+      <view class="form-item">
+        <view class="form-label required">服务类型</view>
+        <picker 
+          mode="selector" 
+          range="{{serviceTypes}}" 
+          value="{{serviceTypeIndex}}"
+          bindchange="onServiceTypeChange"
+        >
+          <view class="picker {{formData.serviceType ? '' : 'placeholder'}}">
+            {{formData.serviceType ? serviceTypes[serviceTypeIndex] : '请选择服务类型'}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">服务价格（元）</view>
+        <input 
+          class="form-input" 
+          type="digit"
+          placeholder="请输入服务价格（选填）"
+          value="{{formData.price}}"
+          bindinput="onInput"
+          data-field="price"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">服务时长（小时）</view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="请输入服务时长（选填）"
+          value="{{formData.duration}}"
+          bindinput="onInput"
+          data-field="duration"
+        />
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">服务时间</view>
+      
+      <view class="form-item">
+        <view class="form-label required">服务日期</view>
+        <picker 
+          mode="date" 
+          value="{{formData.serviceDate}}"
+          start="{{minDate}}"
+          end="{{maxDate}}"
+          bindchange="onDateChange"
+        >
+          <view class="picker {{formData.serviceDate ? '' : 'placeholder'}}">
+            {{formData.serviceDate || '请选择服务日期'}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label required">开始时间</view>
+        <picker 
+          mode="time" 
+          value="{{formData.serviceTime}}"
+          bindchange="onTimeChange"
+        >
+          <view class="picker {{formData.serviceTime ? '' : 'placeholder'}}">
+            {{formData.serviceTime || '请选择开始时间'}}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">服务地址</view>
+      
+      <view class="form-item">
+        <view class="form-label required">服务城市</view>
+        <view class="picker {{formData.city ? '' : 'placeholder'}}" bindtap="showCityPicker">
+          {{formData.city || '请选择服务城市'}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label required">详细地址</view>
+        <input 
+          class="form-input" 
+          placeholder="请输入详细地址"
+          value="{{formData.address}}"
+          bindinput="onInput"
+          data-field="address"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">联系人</view>
+        <input 
+          class="form-input" 
+          placeholder="请输入联系人姓名"
+          value="{{formData.contactName}}"
+          bindinput="onInput"
+          data-field="contactName"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">联系电话</view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="请输入联系电话"
+          value="{{formData.contactPhone}}"
+          bindinput="onInput"
+          data-field="contactPhone"
+        />
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">备注信息</view>
+      
+      <view class="form-item">
+        <view class="form-label">服务要求</view>
+        <textarea 
+          class="form-textarea" 
+          placeholder="请输入服务要求（选填）"
+          value="{{formData.requirements}}"
+          bindinput="onInput"
+          data-field="requirements"
+          maxlength="200"
+        />
+        <view class="char-count">{{formData.requirements.length}}/200</view>
+      </view>
+    </view>
+
+    <view class="submit-section">
+      <button class="submit-btn" form-type="submit" disabled="{{!canSubmit}}">
+        发布订单
+      </button>
+    </view>
+  </form>
+
+  <!-- 城市选择器组件 -->
+  <city-picker 
+    show="{{showCityPicker}}" 
+    selectedCity="{{formData.city}}"
+    bind:cityselect="onCitySelect"
+    bind:close="hideCityPicker"
+  />
+</view>

@@ -1,0 +1,154 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="location-box" bindtap="showCityPicker">
+      <text class="location-icon">📍</text>
+      <text class="location-text">{{currentCity}}</text>
+      <text class="location-arrow">▼</text>
+    </view>
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索订单地址、联系人..." 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+        confirm-type="search"
+      />
+      <text class="clear-icon" wx:if="{{searchKeyword}}" bindtap="clearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="search-history" wx:if="{{searchHistory.length > 0 && !searchKeyword}}">
+    <view class="history-title">
+      <text class="title-text">搜索历史</text>
+      <text class="clear-history" bindtap="clearHistory">清空</text>
+    </view>
+    <view class="history-tags">
+      <view 
+        class="history-tag" 
+        wx:for="{{searchHistory}}" 
+        wx:key="*this"
+        bindtap="searchHistoryItem"
+        data-keyword="{{item}}"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 城市选择器组件 -->
+  <city-picker 
+    show="{{showCityPicker}}" 
+    selectedCity="{{currentCity}}"
+    bind:cityselect="onCitySelect"
+    bind:close="hideCityPicker"
+  />
+
+  <!-- 业务分类 -->
+  <view class="category-bar">
+    <view 
+      class="category-item {{currentCategory === 'all' ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-category="all"
+    >
+      <text class="category-icon">📋</text>
+      <text class="category-text">全部</text>
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'cleaning' ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-category="cleaning"
+    >
+      <text class="category-icon">{{categories.cleaning.icon}}</text>
+      <text class="category-text">{{categories.cleaning.name}}</text>
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'care' ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-category="care"
+    >
+      <text class="category-icon">{{categories.care.icon}}</text>
+      <text class="category-text">{{categories.care.name}}</text>
+    </view>
+    <view 
+      class="category-item {{currentCategory === 'housekeeping' ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-category="housekeeping"
+    >
+      <text class="category-icon">{{categories.housekeeping.icon}}</text>
+      <text class="category-text">{{categories.housekeeping.name}}</text>
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list" wx:if="{{filteredOrders.length > 0}}">
+    <view class="order-card" wx:for="{{filteredOrders}}" wx:key="orderId" bindtap="viewDetail" data-id="{{item.orderId}}">
+      <view class="order-header">
+        <view class="order-left">
+          <view class="order-type" style="border-left-color: {{currentCategoryColor}}">{{item.serviceTypeName}}</view>
+          <view class="order-time">{{item.serviceTime}}</view>
+        </view>
+        <view class="order-right">
+          <view class="order-price">¥{{item.price}}</view>
+        </view>
+      </view>
+
+      <view class="order-body">
+        <view class="order-info">
+          <text class="icon">📍</text>
+          <text class="text">{{item.address}}</text>
+        </view>
+        <view class="order-info">
+          <text class="icon">⏱️</text>
+          <text class="text">{{item.duration}}小时</text>
+        </view>
+
+        <view class="order-info" wx:if="{{item.requirements}}">
+          <text class="icon">📝</text>
+          <text class="text">{{item.requirements}}</text>
+        </view>
+      </view>
+
+      <view class="order-footer">
+        <view class="contact-info">
+          <text class="label">联系人:</text>
+          <text class="value">{{item.contactName}}</text>
+          <text class="phone" bindtap="makeCall" data-phone="{{item.contactPhone}}" catchtap="true">{{hidePhone(item.contactPhone)}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="order-actions" catchtap="stopPropagation">
+        <button 
+          class="action-btn complete-btn" 
+          size="mini"
+          wx:if="{{item.status === 'accepted' && userRole === 'dispatcher'}}"
+          bindtap="completeOrder"
+          data-id="{{item.orderId}}"
+        >
+          完成订单
+        </button>
+
+        <button 
+          class="action-btn grab-btn" 
+          size="mini"
+          wx:if="{{item.status === 'pending' && userRole === 'worker'}}"
+          bindtap="grabOrder"
+          data-id="{{item.orderId}}"
+        >
+          立即抢单
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">{{searchKeyword ? '未找到相关订单' : '暂无订单'}}</text>
+  </view>
+</view>

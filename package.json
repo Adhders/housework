@@ -1,0 +1,19 @@
+{
+  "name": "housework-miniprogram",
+  "version": "1.0.0",
+  "description": "家政服务小程序",
+  "main": "app.js",
+  "scripts": {
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "miniprogram",
+    "weixin",
+    "housework"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.23.0"
+  }
+}

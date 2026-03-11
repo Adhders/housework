@@ -1,0 +1,139 @@
+/* 城市选择器组件样式 */
+.city-picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.city-picker {
+  width: 100%;
+  height: 80vh;
+  background: white;
+  border-radius: 32rpx 32rpx 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.city-picker-header {
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.city-picker-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.city-picker-close {
+  font-size: 40rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.city-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.city-list {
+  padding: 0 40rpx;
+}
+
+.city-section-header {
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  background: #f8f8f8;
+  margin-top: 20rpx;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+}
+
+.section-letter {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #666;
+}
+
+.city-item {
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2rpx solid #f0f0f0;
+  font-size: 32rpx;
+}
+
+.city-item.active {
+  color: #4CAF50;
+}
+
+.city-name {
+  flex: 1;
+}
+
+.check-icon {
+  color: #4CAF50;
+  font-size: 36rpx;
+}
+
+.letter-index {
+  position: absolute;
+  right: 0;
+  top: 120rpx;
+  bottom: 0;
+  width: 80rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.city-picker-header {
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  z-index: 10;
+  position: relative;
+}
+
+.letter-item {
+  height: 40rpx;
+  width: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4rpx 0;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.letter-item text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1;
+}
+
+.letter-item.active {
+  background: #4CAF50;
+}
+
+.letter-item.active text {
+  color: white;
+}

@@ -1,0 +1,112 @@
+<!-- pages/worker/myOrders/myOrders.wxml -->
+<view class="container">
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view 
+      class="filter-item {{currentFilter === 'all' ? 'active' : ''}}"
+      bindtap="switchFilter"
+      data-filter="all"
+    >
+      全部
+    </view>
+    <view 
+      class="filter-item {{currentFilter === 'accepted' ? 'active' : ''}}"
+      bindtap="switchFilter"
+      data-filter="accepted"
+    >
+      进行中
+    </view>
+    <view 
+      class="filter-item {{currentFilter === 'completed' ? 'active' : ''}}"
+      bindtap="switchFilter"
+      data-filter="completed"
+    >
+      已完成
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list" wx:if="{{filteredOrders.length > 0}}">
+    <view class="order-card" wx:for="{{filteredOrders}}" wx:key="orderId">
+      <view class="order-header">
+        <view class="order-left">
+          <view class="order-type">{{item.serviceTypeName}}</view>
+          <view class="order-time">{{item.serviceTime}}</view>
+        </view>
+        <view class="order-right">
+          <view class="order-price">¥{{item.price}}</view>
+          <view class="order-status" style="color: {{statusColor[item.status]}}">
+            {{statusText[item.status]}}
+          </view>
+        </view>
+      </view>
+
+      <view class="order-body">
+        <view class="order-info">
+          <text class="icon">📍</text>
+          <text class="text">{{item.address}}</text>
+        </view>
+        <view class="order-info">
+          <text class="icon">⏱️</text>
+          <text class="text">{{item.duration}}小时</text>
+        </view>
+        <view class="order-info">
+          <text class="icon">👨‍💼</text>
+          <text class="text">派单人: {{item.dispatcherName}}</text>
+        </view>
+        <view class="order-info">
+          <text class="icon">📞</text>
+          <text class="text">{{item.contactName}} - {{hidePhone(item.contactPhone)}}</text>
+        </view>
+        <view class="order-info" wx:if="{{item.requirements}}">
+          <text class="icon">📝</text>
+          <text class="text">{{item.requirements}}</text>
+        </view>
+      </view>
+
+      <view class="order-footer">
+        <view class="order-meta">
+          <text class="meta-text">接单时间: {{item.grabTime ? grabTimeText[index] : '-'}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="order-actions">
+        <button 
+          class="action-btn detail-btn" 
+          size="mini"
+          bindtap="viewDetail"
+          data-id="{{item.orderId}}"
+        >
+          查看详情
+        </button>
+        
+        <button 
+          class="action-btn call-btn" 
+          size="mini"
+          bindtap="makeCall"
+          data-phone="{{item.contactPhone}}"
+        >
+          联系客户
+        </button>
+        
+        <button 
+          class="action-btn complete-btn" 
+          size="mini"
+          wx:if="{{item.status === 'accepted' && role === 'dispatcher'}}"
+          bindtap="completeOrder"
+          data-id="{{item.orderId}}"
+        >
+          完成订单
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无订单</text>
+    <text class="empty-hint" wx:if="{{role === 'worker'}}">快去订单大厅抢单吧</text>
+  </view>
+</view>

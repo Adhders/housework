@@ -1,0 +1,156 @@
+{
+  "collections": [
+    {
+      "name": "users",
+      "description": "用户信息表",
+      "fields": [
+        {
+          "name": "_openid",
+          "type": "string",
+          "description": "用户openid"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "用户姓名"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "description": "手机号"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "角色：dispatcher/worker"
+        },
+        {
+          "name": "createTime",
+          "type": "number",
+          "description": "创建时间"
+        },
+        {
+          "name": "updateTime",
+          "type": "number",
+          "description": "更新时间"
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "description": "订单表",
+      "fields": [
+        {
+          "name": "_openid",
+          "type": "string",
+          "description": "派单员openid"
+        },
+        {
+          "name": "dispatcherId",
+          "type": "string",
+          "description": "派单员ID"
+        },
+        {
+          "name": "dispatcherName",
+          "type": "string",
+          "description": "派单员姓名"
+        },
+        {
+          "name": "workerId",
+          "type": "string",
+          "description": "接单人ID"
+        },
+        {
+          "name": "workerName",
+          "type": "string",
+          "description": "接单人姓名"
+        },
+        {
+          "name": "workerPhone",
+          "type": "string",
+          "description": "接单人电话"
+        },
+        {
+          "name": "serviceType",
+          "type": "string",
+          "description": "服务类型"
+        },
+        {
+          "name": "serviceTypeName",
+          "type": "string",
+          "description": "服务类型名称"
+        },
+        {
+          "name": "price",
+          "type": "number",
+          "description": "价格"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "description": "服务时长（小时）"
+        },
+        {
+          "name": "serviceDate",
+          "type": "string",
+          "description": "服务日期"
+        },
+        {
+          "name": "serviceTime",
+          "type": "string",
+          "description": "服务时间段"
+        },
+        {
+          "name": "serviceTimeStart",
+          "type": "string",
+          "description": "开始时间"
+        },
+        {
+          "name": "serviceTimeEnd",
+          "type": "string",
+          "description": "结束时间"
+        },
+        {
+          "name": "address",
+          "type": "string",
+          "description": "服务地址"
+        },
+        {
+          "name": "contactName",
+          "type": "string",
+          "description": "联系人"
+        },
+        {
+          "name": "contactPhone",
+          "type": "string",
+          "description": "联系电话"
+        },
+        {
+          "name": "requirements",
+          "type": "string",
+          "description": "服务要求"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "状态：pending/accepted/completed/cancelled"
+        },
+        {
+          "name": "grabTime",
+          "type": "number",
+          "description": "抢单时间"
+        },
+        {
+          "name": "createTime",
+          "type": "number",
+          "description": "创建时间"
+        },
+        {
+          "name": "updateTime",
+          "type": "number",
+          "description": "更新时间"
+        }
+      ]
+    }
+  ]
+}

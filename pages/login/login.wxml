@@ -1,0 +1,71 @@
+<!-- pages/login/login.wxml -->
+<view class="container login-container">
+  <view class="logo-section">
+    <view class="logo">🏠</view>
+    <view class="app-name">家政服务</view>
+    <view class="app-slogan">让家政服务更便捷</view>
+  </view>
+
+  <view class="form-section">
+    <!-- 选择角色 -->
+    <view class="role-selector">
+      <view class="section-title">选择您的身份</view>
+      <view class="role-options">
+        <view 
+          class="role-item {{selectedRole === 'worker' ? 'active' : ''}}"
+          bindtap="selectRole"
+          data-role="worker"
+        >
+          <view class="role-icon">👩</view>
+          <view class="role-name">家政阿姨</view>
+          <view class="role-desc">抢单接单</view>
+        </view>
+
+        <view 
+          class="role-item {{selectedRole === 'dispatcher' ? 'active' : ''}}"
+          bindtap="selectRole"
+          data-role="dispatcher"
+        >
+          <view class="role-icon">👨‍💼</view>
+          <view class="role-name">派单员</view>
+          <view class="role-desc">发布订单</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 登录表单 -->
+    <view class="login-form" wx:if="{{selectedRole}}">
+      <view class="form-item">
+        <view class="form-label">姓名</view>
+        <input 
+          class="form-input"
+          placeholder="请输入您的姓名"
+          value="{{formData.name}}"
+          bindinput="onInput"
+          data-field="name"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">手机号</view>
+        <input 
+          class="form-input"
+          type="number"
+          placeholder="请输入手机号"
+          value="{{formData.phone}}"
+          bindinput="onInput"
+          data-field="phone"
+        />
+      </view>
+
+      <button class="login-btn" bindtap="handleLogin" disabled="{{!canLogin}}">
+        登录
+      </button>
+    </view>
+  </view>
+
+  <view class="tips">
+    <view class="tip-text">首次使用默认为测试账号</view>
+    <view class="tip-text">实际项目中请接入微信登录</view>
+  </view>
+</view>

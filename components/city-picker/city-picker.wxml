@@ -1,0 +1,47 @@
+<!-- 城市选择器组件 -->
+<view class="city-picker-mask" wx:if="{{show}}" bindtap="handleMaskTap">
+  <view class="city-picker" catchtap="stopPropagation">
+    <view class="city-picker-header">
+      <text class="city-picker-title">选择城市</text>
+      <text class="city-picker-close" bindtap="handleClose">✕</text>
+    </view>
+    <scroll-view 
+      class="city-scroll" 
+      id="city-scroll" 
+      scroll-y="true" 
+      scroll-with-animation="true"
+      scroll-into-view="{{scrollIntoView}}"
+      scroll-into-view-with-animation="{{true}}"
+      enable-back-to-top="true"
+    >
+      <view class="city-list">
+        <block wx:for="{{cityList}}" wx:key="index">
+          <view class="city-section-header" id="section-{{item.letter}}" wx:if="{{item.type === 'header'}}">
+            <text class="section-letter">{{item.letter}}</text>
+          </view>
+          <view
+            class="city-item {{selectedCity === item.name ? 'active' : ''}}"
+            id="city-{{item.name}}"
+            wx:if="{{item.type === 'city'}}"
+            bindtap="handleCitySelect"
+            data-city="{{item.name}}"
+          >
+            <text class="city-name">{{item.name}}</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+    <view class="letter-index" catchtouchmove="handleTouchMove">
+      <view
+        class="letter-item {{selectedLetter === item ? 'active' : ''}}"
+        wx:for="{{cityLetters}}"
+        wx:key="*this"
+        bindtap="handleLetterTap"
+        catchtouchstart="handleTouchStart"
+        data-letter="{{item}}"
+      >
+        <text>{{item}}</text>
+      </view>
+    </view>
+  </view>
+</view>

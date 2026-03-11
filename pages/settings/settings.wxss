@@ -1,0 +1,97 @@
+/* pages/settings/settings.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 40rpx;
+  padding-top: 20rpx;
+}
+
+/* 设置区块 */
+.settings-section {
+  background: white;
+  margin: 30rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #999;
+  padding: 24rpx 30rpx;
+  background: #f9f9f9;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background-color 0.2s;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item:active {
+  background-color: #f9f9f9;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+}
+
+.setting-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+  width: 50rpx;
+  text-align: center;
+}
+
+.setting-name {
+  font-size: 32rpx;
+  color: #333;
+}
+
+.setting-right {
+  display: flex;
+  align-items: center;
+}
+
+.setting-value {
+  font-size: 28rpx;
+  color: #999;
+  margin-right: 10rpx;
+}
+
+.setting-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+/* 底部版权 */
+.footer {
+  text-align: center;
+  padding: 60rpx 30rpx;
+  color: #999;
+}
+
+.copyright {
+  font-size: 24rpx;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.version {
+  font-size: 22rpx;
+}

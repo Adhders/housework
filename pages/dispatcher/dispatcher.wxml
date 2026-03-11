@@ -1,0 +1,78 @@
+<!-- pages/dispatcher/dispatcher.wxml -->
+<view class="container">
+  <view class="stats-container">
+    <view class="stat-card">
+      <view class="stat-value">{{stats.total}}</view>
+      <view class="stat-label">全部订单</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-value">{{stats.pending}}</view>
+      <view class="stat-label">待接单</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-value">{{stats.accepted}}</view>
+      <view class="stat-label">进行中</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-value">{{stats.completed}}</view>
+      <view class="stat-label">已完成</view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="quick-actions">
+    <view class="action-btn primary" bindtap="goToPublish">
+      <text class="icon">➕</text>
+      <text>发布订单</text>
+    </view>
+    <view class="action-btn secondary" bindtap="goToManage">
+      <text class="icon">⚙️</text>
+      <text>订单管理</text>
+    </view>
+  </view>
+
+  <!-- 最近订单 -->
+  <view class="recent-orders">
+    <view class="section-header">
+      <view class="section-title">最近订单</view>
+      <view class="section-more" bindtap="goToManage">查看全部</view>
+    </view>
+
+    <view class="order-list" wx:if="{{recentOrders.length > 0}}">
+      <view class="order-card" wx:for="{{recentOrders}}" wx:key="id" bindtap="viewOrderDetail" data-id="{{item.id}}">
+        <view class="order-header">
+          <view class="order-type">{{item.serviceType}}</view>
+          <view class="order-status" style="color: {{statusColor[item.status]}}">
+            {{statusText[item.status]}}
+          </view>
+        </view>
+        <view class="order-body">
+          <view class="order-info">
+            <text class="info-icon">📍</text>
+            <text class="info-text">{{item.address}}</text>
+          </view>
+          <view class="order-info">
+            <text class="info-icon">🕐</text>
+            <text class="info-text">{{item.serviceTime}}</text>
+          </view>
+          <view class="order-info">
+            <text class="info-icon">💰</text>
+            <text class="info-text price">¥{{item.price}}</text>
+          </view>
+        </view>
+        <view class="order-footer">
+          <view class="order-time">{{item.createTime}}</view>
+          <view class="order-worker" wx:if="{{item.workerName}}">
+            接单人: {{item.workerName}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无订单</text>
+      <text class="empty-hint">点击"发布订单"开始派单</text>
+    </view>
+  </view>
+</view>
