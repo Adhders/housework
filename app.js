@@ -8,7 +8,8 @@ App({
     orders: [],
     userOrders: [],
     db: null,
-    envId: null
+    envId: null,
+    needRefreshOrders: {} // 需要刷新的订单标志
   },
 
   onLaunch() {

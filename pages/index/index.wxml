@@ -2,10 +2,10 @@
 <view class="container">
   <!-- 搜索框 -->
   <view class="search-bar">
-    <view class="location-box" bindtap="showCityPicker">
-      <text class="location-icon">📍</text>
-      <text class="location-text">{{currentCity}}</text>
-      <text class="location-arrow">▼</text>
+    <view class="sort-box" bindtap="showSortOptions">
+      <text class="sort-icon">⇅</text>
+      <text class="sort-text">{{sortTypeName}}</text>
+      <text class="sort-arrow">▼</text>
     </view>
     <view class="search-box">
       <text class="search-icon">🔍</text>
@@ -18,6 +18,32 @@
         confirm-type="search"
       />
       <text class="clear-icon" wx:if="{{searchKeyword}}" bindtap="clearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 排序选项弹窗 -->
+  <view class="sort-popup" wx:if="{{showSortPopup}}">
+    <view class="sort-mask" bindtap="hideSortOptions"></view>
+    <view class="sort-content">
+      <view class="sort-title">排序方式</view>
+      <view 
+        class="sort-option {{sortType === 'time' ? 'active' : ''}}" 
+        bindtap="selectSort" 
+        data-type="time"
+      >
+        <text class="option-icon">📅</text>
+        <text class="option-text">按预约时间</text>
+        <text class="option-check" wx:if="{{sortType === 'time'}}">✓</text>
+      </view>
+      <view 
+        class="sort-option {{sortType === 'distance' ? 'active' : ''}}" 
+        bindtap="selectSort" 
+        data-type="distance"
+      >
+        <text class="option-icon">📍</text>
+        <text class="option-text">按距离远近</text>
+        <text class="option-check" wx:if="{{sortType === 'distance'}}">✓</text>
+      </view>
     </view>
   </view>
 
@@ -39,14 +65,6 @@
       </view>
     </view>
   </view>
-
-  <!-- 城市选择器组件 -->
-  <city-picker 
-    show="{{showCityPicker}}" 
-    selectedCity="{{currentCity}}"
-    bind:cityselect="onCitySelect"
-    bind:close="hideCityPicker"
-  />
 
   <!-- 业务分类 -->
   <view class="category-bar">
@@ -123,8 +141,8 @@
 
       <!-- 操作按钮 -->
       <view class="order-actions" catchtap="stopPropagation">
-        <button 
-          class="action-btn complete-btn" 
+        <button
+          class="action-btn complete-btn"
           size="mini"
           wx:if="{{item.status === 'accepted' && userRole === 'dispatcher'}}"
           bindtap="completeOrder"
@@ -133,8 +151,8 @@
           完成订单
         </button>
 
-        <button 
-          class="action-btn grab-btn" 
+        <button
+          class="action-btn grab-btn"
           size="mini"
           wx:if="{{item.status === 'pending' && userRole === 'worker'}}"
           bindtap="grabOrder"
@@ -142,18 +160,18 @@
         >
           立即抢单
         </button>
-
-        <!-- 分享给好友按钮 -->
-        <button
-          class="action-btn share-btn"
-          size="mini"
-          open-type="share"
-          data-order="{{item}}"
-          bindtap="onShareBtnTap"
-        >
-          📤 分享
-        </button>
       </view>
+
+      <!-- 分享给好友按钮 -->
+      <button
+        class="action-btn share-btn"
+        size="mini"
+        open-type="share"
+        data-order="{{item}}"
+        bindtap="onShareBtnTap"
+      >
+        <image src="/images/share.svg" class="share-icon"></image>
+      </button>
     </view>
   </view>
 

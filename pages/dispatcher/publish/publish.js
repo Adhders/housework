@@ -16,6 +16,8 @@ Page({
     cityLetters: [], // 字母列表
     selectedLetter: '', // 当前选中的字母
     canSubmit: false, // 是否可以提交
+    isEditMode: false, // 是否为编辑模式
+    editOrderId: null, // 编辑的订单ID
     formData: {
       serviceType: '',
       serviceTypeKey: '',
@@ -25,15 +27,76 @@ Page({
       serviceTime: '',
       city: '',
       address: '',
+      detailAddress: '',
+      latitude: '',
+      longitude: '',
       contactName: '',
       contactPhone: '',
       requirements: ''
     }
   },
 
-  onLoad() {
+  onLoad(options) {
     this.initDates();
     this.initCity();
+    
+    // 检查是否为编辑模式
+    if (options.mode === 'edit' && options.orderId) {
+      this.setData({
+        isEditMode: true,
+        editOrderId: options.orderId
+      });
+      this.loadOrderForEdit(options.orderId);
+    }
+  },
+
+  // 加载订单数据进行编辑
+  async loadOrderForEdit(orderId) {
+    wx.showLoading({ title: '加载中...' });
+    try {
+      const order = await CloudStorage.getOrder(orderId);
+      if (!order) {
+        wx.showToast({ title: '订单不存在', icon: 'none' });
+        return;
+      }
+      
+      // 找到服务类型索引
+      const serviceTypeIndex = this.data.serviceTypes.indexOf(order.serviceTypeName);
+      
+      // 提取时间
+      let serviceTime = '';
+      if (order.serviceTime) {
+        const timeMatch = order.serviceTime.match(/\d{2}:\d{2}/);
+        serviceTime = timeMatch ? timeMatch[0] : '';
+      }
+      
+      this.setData({
+        serviceTypeIndex: serviceTypeIndex,
+        'formData.serviceType': order.serviceTypeName || '',
+        'formData.serviceTypeKey': order.serviceType || '',
+        'formData.price': order.price ? String(order.price) : '',
+        'formData.duration': order.duration ? String(order.duration) : '',
+        'formData.serviceDate': order.serviceDate || '',
+        'formData.serviceTime': serviceTime,
+        'formData.city': order.city ? order.city + '市' : '',
+        'formData.address': order.address || '',
+        'formData.detailAddress': order.detailAddress || '',
+        'formData.latitude': order.latitude || '',
+        'formData.longitude': order.longitude || '',
+        'formData.contactName': order.contactName || '',
+        'formData.contactPhone': order.contactPhone || '',
+        'formData.requirements': order.requirements || ''
+      }, () => {
+        this.updateCanSubmit();
+      });
+      
+      wx.setNavigationBarTitle({ title: '编辑订单' });
+    } catch (e) {
+      console.error('加载订单失败:', e);
+      wx.showToast({ title: '加载失败', icon: 'none' });
+    } finally {
+      wx.hideLoading();
+    }
   },
 
   // 初始化城市 - 使用用户当前城市
@@ -149,32 +212,89 @@ Page({
            formData.city;
   },
 
-  // 从地址中提取城市
-  extractCityFromAddress(address) {
-    if (!address) return '';
-    
-    // 常见城市列表
-    const cities = ['北京', '上海', '广州', '深圳', '杭州', '南京', '成都', '武汉', '西安', '重庆', 
-                    '天津', '苏州', '郑州', '长沙', '青岛', '大连', '厦门', '无锡', '福州', '济南'];
-    
-    for (let city of cities) {
-      if (address.includes(city)) {
-        return city;
+  // 选择位置
+  chooseLocation() {
+    wx.chooseLocation({
+      success: (res) => {
+        console.log('选择位置成功:', res);
+        let city = '';
+        const fullAddress = res.address + res.name; // Combine for better city detection
+
+        // Try to find a matching city from the predefined list
+        for (const c of this.data.cities) {
+          if (fullAddress.includes(c)) {
+            city = c;
+            break;
+          }
+        }
+
+        // Fallback: if no match found, try to extract from address string
+        if (!city) {
+          const match = fullAddress.match(/^(.{2,7}?[市州区县])/);
+          if (match) {
+            city = match[1];
+          }
+        }
+
+        // 如果提取到了城市，更新城市字段
+        if (city) {
+          this.setData({
+            'formData.city': city,
+            'formData.address': res.name,
+            'formData.latitude': res.latitude,
+            'formData.longitude': res.longitude
+          }, () => {
+            this.updateCanSubmit();
+            console.log('formData after chooseLocation (with city):', this.data.formData);
+          });
+        } else {
+          // 没有提取到城市，只更新地址和经纬度，并提示用户手动选择城市
+          wx.showToast({
+            title: '未能自动识别城市，请手动选择',
+            icon: 'none',
+            duration: 2000
+          });
+          this.setData({
+            'formData.address': res.name,
+            'formData.latitude': res.latitude,
+            'formData.longitude': res.longitude
+          }, () => {
+            this.updateCanSubmit();
+            console.log('formData after chooseLocation (no city):', this.data.formData);
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('选择位置失败:', err);
+        if (err.errMsg.includes('permission')) {
+          wx.showModal({
+            title: '位置权限',
+            content: '需要获取位置权限来选择地址，请前往设置开启',
+            confirmText: '去设置',
+            success: (res) => {
+              if (res.confirm) {
+                wx.openSetting();
+              }
+            }
+          });
+        } else if (err.errMsg.includes('auth deny')) {
+          wx.showToast({
+            title: '已拒绝位置权限',
+            icon: 'none'
+          });
+        } else {
+          wx.showToast({
+            title: '选择位置失败',
+            icon: 'none'
+          });
+        }
       }
-    }
-    
-    // 如果没有匹配到，尝试从地址开头提取（通常是省份+城市）
-    const match = address.match(/^(.{2,7}?)[市区]/);
-    if (match) {
-      return match[1];
-    }
-    
-    return '';
+    });
   },
 
   // 提交表单
   async handleSubmit(e) {
-    const { formData, serviceTypeIndex } = this.data;
+    const { formData, serviceTypeIndex, isEditMode, editOrderId } = this.data;
 
     if (!this.canSubmit()) {
       wx.showToast({
@@ -184,15 +304,17 @@ Page({
       return;
     }
 
-    wx.showLoading({ title: '发布中...' });
+    const actionText = isEditMode ? '保存中...' : '发布中...';
+    const successText = isEditMode ? '保存成功' : '发布成功';
+    const failText = isEditMode ? '保存失败' : '发布失败';
+
+    wx.showLoading({ title: actionText });
 
     // 使用选择的城市，去掉末尾的"市"字统一格式
     const city = (formData.city || this.data.cities[0]).replace(/市$/, '');
 
     // 构建订单数据
-    const order = {
-      dispatcherId: app.globalData.userId,
-      dispatcherName: app.globalData.userInfo.name,
+    const orderData = {
       serviceType: formData.serviceTypeKey,
       serviceTypeName: formData.serviceType,
       price: formData.price ? parseFloat(formData.price) : 0,
@@ -200,32 +322,53 @@ Page({
       serviceDate: formData.serviceDate,
       serviceTime: `${formData.serviceDate} ${formData.serviceTime}`,
       address: formData.address,
+      detailAddress: formData.detailAddress,
       city: city,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
       contactName: formData.contactName || app.globalData.userInfo.name,
       contactPhone: formData.contactPhone || app.globalData.userInfo.phone,
       requirements: formData.requirements,
-      createTime: Date.now(),
       updateTime: Date.now()
     };
 
-    // 保存订单到云数据库
-    const success = await CloudStorage.addOrder(order);
+    let success;
+    if (isEditMode) {
+      // 编辑模式：更新订单
+      success = await CloudStorage.updateOrder(editOrderId, orderData);
+    } else {
+      // 新增模式：创建订单
+      orderData.dispatcherId = app.globalData.userId;
+      orderData.dispatcherName = app.globalData.userInfo.name;
+      orderData.createTime = Date.now();
+      success = await CloudStorage.addOrder(orderData);
+    }
     
     wx.hideLoading();
 
     if (success) {
       wx.showToast({
-        title: '发布成功',
+        title: successText,
         icon: 'success',
         duration: 1500
       });
+
+      // 编辑模式保存成功，设置刷新标志
+      if (isEditMode) {
+        // 使用全局变量标记订单需要刷新
+        const app = getApp();
+        if (!app.globalData.needRefreshOrders) {
+          app.globalData.needRefreshOrders = {};
+        }
+        app.globalData.needRefreshOrders[editOrderId] = true;
+      }
 
       setTimeout(() => {
         wx.navigateBack();
       }, 1500);
     } else {
       wx.showToast({
-        title: '发布失败',
+        title: failText,
         icon: 'none'
       });
     }

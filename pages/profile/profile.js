@@ -132,13 +132,6 @@ Page({
       // 派单员的菜单
       baseItems.push(
         {
-          id: 'dispatch-manage',
-          icon: '📋',
-          title: '派单管理',
-          desc: '管理所有订单',
-          url: '/pages/dispatcher/manage/manage'
-        },
-        {
           id: 'publish-order',
           icon: '➕',
           title: '发布订单',
@@ -146,11 +139,25 @@ Page({
           url: '/pages/dispatcher/publish/publish'
         },
         {
+          id: 'dispatch-manage',
+          icon: '📋',
+          title: '派单管理',
+          desc: '管理所有订单',
+          url: '/pages/dispatcher/manage/manage'
+        },
+        {
+          id: 'worker-manage',
+          icon: '👷‍♀️',
+          title: '阿姨管理',
+          desc: '管理合作阿姨',
+          url: '/pages/dispatcher/workers/workers'
+        },
+        {
           id: 'statistics',
           icon: '📊',
           title: '数据统计',
           desc: '查看订单和收入统计',
-          url: ''
+          url: '/pages/dispatcher/stats/stats'
         }
       );
     }
@@ -182,7 +189,6 @@ Page({
       // 处理没有URL的菜单项
       switch(id) {
         case 'my-performance':
-        case 'statistics':
           this.showStats();
           break;
         default:

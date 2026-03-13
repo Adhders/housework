@@ -46,6 +46,9 @@ exports.main = function(event, context) {
       case 'complete':
         return completeOrder(data, wxContext)
 
+      case 'uploadImages':
+        return uploadServiceImages(data, wxContext)
+
       default:
         return Promise.resolve({
           code: 400,
@@ -429,6 +432,64 @@ function completeOrder(data, wxContext) {
     return {
       code: -1,
       message: err.message || '完成订单失败',
+      error: err && err.message ? err.message : String(err)
+    }
+  })
+}
+
+// 上传服务图片
+function uploadServiceImages(data, wxContext) {
+  var orderId = data.orderId
+  var imageUrls = data.imageUrls || []
+
+  return db.collection(ORDERS_COLLECTION).doc(orderId).get().then(function(order) {
+    if (!order.data) {
+      return {
+        code: 404,
+        message: '订单不存在'
+      }
+    }
+
+    // 检查权限：只有接单的阿姨可以上传图片
+    if (order.data.workerOpenid !== wxContext.OPENID) {
+      return {
+        code: 403,
+        message: '无权操作此订单'
+      }
+    }
+
+    // 检查订单状态：只能为已接单或已完成的订单上传图片
+    if (order.data.status !== 'accepted' && order.data.status !== 'completed') {
+      return {
+        code: 400,
+        message: '只能在接单后上传服务图片'
+      }
+    }
+
+    // 合并现有图片和新上传的图片
+    var existingImages = order.data.serviceImages || []
+    var allImages = existingImages.concat(imageUrls)
+
+    var now = Date.now()
+    return db.collection(ORDERS_COLLECTION).doc(orderId).update({
+      data: {
+        serviceImages: allImages,
+        updateTime: now
+      }
+    }).then(function(result) {
+      return {
+        code: 0,
+        message: '上传成功',
+        data: {
+          imageCount: allImages.length
+        }
+      }
+    })
+  }).catch(function(err) {
+    console.error('上传服务图片失败:', err)
+    return {
+      code: -1,
+      message: err.message || '上传服务图片失败',
       error: err && err.message ? err.message : String(err)
     }
   })

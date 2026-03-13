@@ -57,6 +57,12 @@
   border: 2rpx solid #4CAF50;
 }
 
+.action-btn.tertiary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.4);
+}
+
 .action-btn:active {
   transform: scale(0.98);
 }

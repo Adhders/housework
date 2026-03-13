@@ -13,11 +13,41 @@ Page({
       userInfo: app.globalData.userInfo
     });
     this.getCacheSize();
+    this.loadUserCity();
   },
 
   onShow() {
     this.setData({
       userInfo: app.globalData.userInfo
+    });
+    this.loadUserCity();
+  },
+
+  // 加载用户的城市信息
+  async loadUserCity() {
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'userManager',
+        data: {
+          action: 'get'
+        }
+      });
+
+      if (result.result && result.result.code === 0) {
+        const userData = result.result.data;
+        if (userData && userData.city) {
+          this.setData({ defaultCity: userData.city });
+        }
+      }
+    } catch (e) {
+      console.error('加载默认城市失败:', e);
+    }
+  },
+
+  // 跳转到地址管理
+  goToAddressManage() {
+    wx.navigateTo({
+      url: '/pages/settings/address/address'
     });
   },
 

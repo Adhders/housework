@@ -98,6 +98,16 @@
         </button>
         
         <button 
+          class="action-btn revert-btn" 
+          size="mini"
+          wx:if="{{item.status === 'accepted'}}"
+          bindtap="revertOrder"
+          data-id="{{item.orderId}}"
+        >
+          回退订单
+        </button>
+        
+        <button 
           class="action-btn complete-btn" 
           size="mini"
           wx:if="{{item.status === 'accepted'}}"

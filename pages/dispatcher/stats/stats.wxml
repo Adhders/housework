@@ -1,0 +1,225 @@
+<!-- pages/dispatcher/stats/stats.wxml -->
+<view class="container" wx:if="{{!loading}}">
+  <!-- 顶部统计卡片 -->
+  <view class="header-card">
+    <view class="card-item">
+      <view class="card-label">总订单</view>
+      <view class="card-value">{{stats.total}}</view>
+    </view>
+    <view class="card-item">
+      <view class="card-label">待接单</view>
+      <view class="card-value pending">{{stats.pending}}</view>
+    </view>
+    <view class="card-item">
+      <view class="card-label">进行中</view>
+      <view class="card-value accepted">{{stats.accepted}}</view>
+    </view>
+    <view class="card-item">
+      <view class="card-label">已完成</view>
+      <view class="card-value completed">{{stats.completed}}</view>
+    </view>
+    <view class="card-item">
+      <view class="card-label">完成率</view>
+      <view class="card-value completed">{{stats.completionRate}}%</view>
+    </view>
+    <view class="card-item">
+      <view class="card-label">日均订单</view>
+      <view class="card-value">{{stats.avgDaily}}</view>
+    </view>
+  </view>
+
+  <!-- 日期范围选择 -->
+  <view class="date-range-selector">
+    <view class="range-title">数据周期</view>
+    <view class="range-buttons">
+      <button class="range-btn {{dateRange === 7 ? 'active' : ''}}" data-range="7" bindtap="selectDateRange">近7天</button>
+      <button class="range-btn {{dateRange === 15 ? 'active' : ''}}" data-range="15" bindtap="selectDateRange">近15天</button>
+      <button class="range-btn {{dateRange === 30 ? 'active' : ''}}" data-range="30" bindtap="selectDateRange">近30天</button>
+      <button class="range-btn {{dateRange === 90 ? 'active' : ''}}" data-range="90" bindtap="selectDateRange">近90天</button>
+    </view>
+    <view class="date-info">{{startDate}} 至 {{endDate}}</view>
+  </view>
+
+  <!-- 标签切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{currentTab === 'daily' ? 'active' : ''}}" data-tab="daily" bindtap="switchTab">
+      <text class="tab-text">日数据</text>
+      <view class="tab-indicator" wx:if="{{currentTab === 'daily'}}"></view>
+    </view>
+    <view class="tab-item {{currentTab === 'monthly' ? 'active' : ''}}" data-tab="monthly" bindtap="switchTab">
+      <text class="tab-text">月数据</text>
+      <view class="tab-indicator" wx:if="{{currentTab === 'monthly'}}"></view>
+    </view>
+  </view>
+
+  <!-- 日数据图表 -->
+  <view class="content" wx:if="{{currentTab === 'daily'}}">
+    <view class="chart-title">最近订单趋势</view>
+    <view class="chart-container">
+      <scroll-view class="chart-scroll" scroll-x="true" scroll-left="{{0}}">
+        <view class="chart-bars">
+          <view class="bar-item" wx:for="{{dailyStats}}" wx:key="date">
+            <view class="bar-wrapper" bindtap="viewDetails" data-date="{{item.date}}">
+              <view class="bar-stack">
+                <view 
+                  class="bar pending" 
+                  style="height: {{item.pending * 5}}rpx;"
+                  wx:if="{{item.pending > 0}}"
+                ></view>
+                <view 
+                  class="bar accepted" 
+                  style="height: {{item.accepted * 5}}rpx;"
+                  wx:if="{{item.accepted > 0}}"
+                ></view>
+                <view 
+                  class="bar completed" 
+                  style="height: {{item.completed * 5}}rpx;"
+                  wx:if="{{item.completed > 0}}"
+                ></view>
+                <view 
+                  class="bar cancelled" 
+                  style="height: {{item.cancelled * 5}}rpx;"
+                  wx:if="{{item.cancelled > 0}}"
+                ></view>
+              </view>
+              <view class="bar-label">{{item.date.slice(5)}}</view>
+              <view class="bar-total">{{item.total}}</view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 图例 -->
+    <view class="legend">
+      <view class="legend-item">
+        <view class="legend-color pending"></view>
+        <text class="legend-text">待接单</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color accepted"></view>
+        <text class="legend-text">进行中</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color completed"></view>
+        <text class="legend-text">已完成</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color cancelled"></view>
+        <text class="legend-text">已取消</text>
+      </view>
+    </view>
+
+    <!-- 日数据列表 -->
+    <view class="stats-list">
+      <view class="stats-header">
+        <text>日期</text>
+        <text>总数</text>
+        <text>待接</text>
+        <text>进行</text>
+        <text>完成</text>
+      </view>
+      <view class="stats-row" wx:for="{{dailyStats}}" wx:key="date" bindtap="viewDetails" data-date="{{item.date}}">
+        <text class="col-date">{{item.date}}</text>
+        <text class="col-total">{{item.total}}</text>
+        <text class="col-pending">{{item.pending}}</text>
+        <text class="col-accepted">{{item.accepted}}</text>
+        <text class="col-completed">{{item.completed}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 月数据图表 -->
+  <view class="content" wx:if="{{currentTab === 'monthly'}}">
+    <view class="chart-title">最近12个月订单统计</view>
+    <view class="chart-container">
+      <scroll-view class="chart-scroll" scroll-x="true" scroll-left="{{0}}">
+        <view class="chart-bars">
+          <view class="bar-item" wx:for="{{monthlyStats}}" wx:key="month">
+            <view class="bar-wrapper">
+              <view class="bar-stack">
+                <view 
+                  class="bar pending" 
+                  style="height: {{item.pending * 3}}rpx;"
+                  wx:if="{{item.pending > 0}}"
+                ></view>
+                <view 
+                  class="bar accepted" 
+                  style="height: {{item.accepted * 3}}rpx;"
+                  wx:if="{{item.accepted > 0}}"
+                ></view>
+                <view 
+                  class="bar completed" 
+                  style="height: {{item.completed * 3}}rpx;"
+                  wx:if="{{item.completed > 0}}"
+                ></view>
+                <view 
+                  class="bar cancelled" 
+                  style="height: {{item.cancelled * 3}}rpx;"
+                  wx:if="{{item.cancelled > 0}}"
+                ></view>
+              </view>
+              <view class="bar-label">{{item.month.slice(5)}}</view>
+              <view class="bar-total">{{item.total}}</view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 图例 -->
+    <view class="legend">
+      <view class="legend-item">
+        <view class="legend-color pending"></view>
+        <text class="legend-text">待接单</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color accepted"></view>
+        <text class="legend-text">进行中</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color completed"></view>
+        <text class="legend-text">已完成</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color cancelled"></view>
+        <text class="legend-text">已取消</text>
+      </view>
+    </view>
+
+    <!-- 月数据列表 -->
+    <view class="stats-list">
+      <view class="stats-header">
+        <text>月份</text>
+        <text>总数</text>
+        <text>待接</text>
+        <text>进行</text>
+        <text>完成</text>
+      </view>
+      <view class="stats-row" wx:for="{{monthlyStats}}" wx:key="month">
+        <text class="col-date">{{item.month}}</text>
+        <text class="col-total">{{item.total}}</text>
+        <text class="col-pending">{{item.pending}}</text>
+        <text class="col-accepted">{{item.accepted}}</text>
+        <text class="col-completed">{{item.completed}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-actions">
+    <button class="action-btn refresh-btn" bindtap="refreshData">
+      <text class="btn-icon">🔄</text>
+      <text class="btn-text">刷新数据</text>
+    </button>
+    <button class="action-btn export-btn" bindtap="exportData">
+      <text class="btn-icon">📥</text>
+      <text class="btn-text">导出数据</text>
+    </button>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <text class="loading-text">加载中...</text>
+</view>

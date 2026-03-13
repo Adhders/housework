@@ -212,6 +212,79 @@ var CloudStorage = {
       console.error('completeOrder error:', e)
       return { success: false, message: '完成失败' }
     }
+  },
+
+  revertOrder: async function(orderId) {
+    try {
+      var result = await wx.cloud.callFunction({
+        name: 'orderManager',
+        data: {
+          action: 'revert',
+          data: { orderId: orderId }
+        }
+      })
+      
+      if (result.result && result.result.code === 0) {
+        return { success: true, message: '回退成功' }
+      } else {
+        return { success: false, message: result.result ? result.result.message : '回退失败' }
+      }
+    } catch (e) {
+      console.error('revertOrder error:', e)
+      return { success: false, message: '回退失败' }
+    }
+  },
+
+  uploadServiceImages: async function(orderId, imageUrls) {
+    try {
+      var result = await wx.cloud.callFunction({
+        name: 'orderManager',
+        data: {
+          action: 'uploadImages',
+          data: { 
+            orderId: orderId,
+            imageUrls: imageUrls
+          }
+        }
+      })
+      
+      if (result.result && result.result.code === 0) {
+        return { success: true, message: '上传成功' }
+      } else {
+        return { success: false, message: result.result ? result.result.message : '上传失败' }
+      }
+    } catch (e) {
+      console.error('uploadServiceImages error:', e)
+      return { success: false, message: '上传失败' }
+    }
+  },
+
+  // 获取我的订单（兼容方法，与getOrders相同）
+  getMyOrders: async function(dispatcherId) {
+    return this.getDispatcherOrders(dispatcherId)
+  },
+
+  // 获取派单员的所有订单（用于统计）
+  getOrdersByDispatcher: async function(dispatcherId) {
+    try {
+      var result = await wx.cloud.callFunction({
+        name: 'orderManager',
+        data: {
+          action: 'getDispatcherOrders',
+          data: {
+            dispatcherId: dispatcherId
+          }
+        }
+      })
+      
+      if (result.result && result.result.code === 0) {
+        return result.result.data || []
+      }
+      return []
+    } catch (e) {
+      console.error('getOrdersByDispatcher error:', e)
+      return []
+    }
   }
 }
 

@@ -1,0 +1,89 @@
+/* pages/settings/address-edit/address-edit.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 120rpx;
+}
+
+.form-section {
+  background: #fff;
+  margin-top: 20rpx;
+}
+
+.form-title {
+  padding: 30rpx 30rpx 20rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  width: 200rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.form-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.picker-value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.picker-value .placeholder {
+  color: #999;
+}
+
+.picker-arrow {
+  color: #ccc;
+  font-size: 36rpx;
+}
+
+.switch-item {
+  justify-content: space-between;
+}
+
+.save-btn-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.save-btn {
+  width: 100%;
+  background: #07c160;
+  color: #fff;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  border-radius: 44rpx;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+

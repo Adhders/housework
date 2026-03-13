@@ -29,6 +29,10 @@
       <text class="icon">⚙️</text>
       <text>订单管理</text>
     </view>
+    <view class="action-btn tertiary" bindtap="goToWorkers">
+      <text class="icon">👷‍♀️</text>
+      <text>阿姨管理</text>
+    </view>
   </view>
 
   <!-- 最近订单 -->

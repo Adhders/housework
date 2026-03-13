@@ -13,7 +13,7 @@
   gap: 16rpx;
 }
 
-.location-box {
+.sort-box {
   display: flex;
   align-items: center;
   background: white;
@@ -23,25 +23,93 @@
   flex-shrink: 0;
 }
 
-.location-icon {
+.sort-icon {
   font-size: 32rpx;
   margin-right: 8rpx;
 }
 
-.location-text {
-  font-size: 28rpx;
+.sort-text {
+  font-size: 26rpx;
   color: #333;
   font-weight: 500;
-  max-width: 120rpx;
+  max-width: 140rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.location-arrow {
+.sort-arrow {
   font-size: 20rpx;
   color: #999;
   margin-left: 8rpx;
+}
+
+/* 排序弹窗 */
+.sort-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.sort-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.sort-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 30rpx;
+}
+
+.sort-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.sort-option.active {
+  background: #f0f7ff;
+}
+
+.option-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.option-check {
+  font-size: 32rpx;
+  color: #4CAF50;
+  font-weight: bold;
 }
 
 .search-box {
@@ -216,6 +284,7 @@
   padding: 30rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
   transition: all 0.3s;
+  position: relative;
 }
 
 .order-card:active {
@@ -326,6 +395,7 @@
   display: flex;
   gap: 16rpx;
   justify-content: flex-end;
+  margin-top: 20rpx; /* 添加一个上边距，避免与上方内容过于紧凑 */
 }
 
 .action-btn {
@@ -356,8 +426,29 @@
 }
 
 .share-btn {
-  background: #07C160;
-  color: white;
+  position: absolute;
+  bottom: 20rpx;
+  right: 20rpx;
+  width: 70rpx;
+  height: 70rpx;
+  background: transparent !important;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  box-shadow: none !important;
+  z-index: 10;
+}
+
+.share-btn::after {
+  border: none;
+}
+
+.share-icon {
+  width: 40rpx; /* 根据需要调整 */
+  height: 40rpx; /* 根据需要调整 */
 }
 
 /* 空状态 */

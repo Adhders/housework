@@ -25,6 +25,11 @@
           "description": "角色：dispatcher/worker"
         },
         {
+          "name": "city",
+          "type": "string",
+          "description": "工作城市"
+        },
+        {
           "name": "createTime",
           "type": "number",
           "description": "创建时间"
@@ -116,6 +121,16 @@
           "description": "服务地址"
         },
         {
+          "name": "latitude",
+          "type": "number",
+          "description": "纬度"
+        },
+        {
+          "name": "longitude",
+          "type": "number",
+          "description": "经度"
+        },
+        {
           "name": "contactName",
           "type": "string",
           "description": "联系人"
@@ -149,6 +164,67 @@
           "name": "updateTime",
           "type": "number",
           "description": "更新时间"
+        }
+      ]
+    },
+    {
+      "name": "evaluations",
+      "description": "阿姨评价表",
+      "fields": [
+        {
+          "name": "_openid",
+          "type": "string",
+          "description": "评价人openid"
+        },
+        {
+          "name": "workerId",
+          "type": "string",
+          "description": "阿姨ID"
+        },
+        {
+          "name": "workerName",
+          "type": "string",
+          "description": "阿姨姓名"
+        },
+        {
+          "name": "dispatcherId",
+          "type": "string",
+          "description": "派单员ID"
+        },
+        {
+          "name": "dispatcherName",
+          "type": "string",
+          "description": "派单员姓名"
+        },
+        {
+          "name": "attitude",
+          "type": "number",
+          "description": "服务态度评分（1-5）"
+        },
+        {
+          "name": "quality",
+          "type": "number",
+          "description": "服务质量评分（1-5）"
+        },
+        {
+          "name": "punctuality",
+          "type": "number",
+          "description": "准时程度评分（1-5）"
+        },
+        {
+          "name": "avgScore",
+          "type": "number",
+          "description": "综合评分"
+        },
+        {
+          "name": "comment",
+          "type": "string",
+          "description": "评价内容"
+        },
+        {
+          "name": "createTime",
+          "type": "number",
+          "description": "评价时间"
         }
       ]
     }

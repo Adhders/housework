@@ -11,8 +11,6 @@
   <view class="info-section">
     <view class="section-title">订单信息</view>
     
-    <!-- 查看模式 -->
-    <block wx:if="{{!isEditing}}">
       <view class="info-item">
         <view class="info-label">服务类型</view>
         <view class="info-value">{{order.serviceTypeName}}</view>
@@ -32,41 +30,20 @@
         <view class="info-label">服务时间</view>
         <view class="info-value">{{order.serviceTime}}</view>
       </view>
-    </block>
-    
-    <!-- 编辑模式 -->
-    <block wx:if="{{isEditing}}">
-      <view class="edit-item">
-        <view class="edit-label">服务价格</view>
-        <input class="edit-input" type="digit" value="{{editForm.price}}" data-field="price" bindinput="onEditInput" placeholder="请输入价格"/>
-      </view>
-
-      <view class="edit-item">
-        <view class="edit-label">服务时长</view>
-        <input class="edit-input" type="number" value="{{editForm.duration}}" data-field="duration" bindinput="onEditInput" placeholder="请输入时长"/>
-      </view>
-
-      <view class="edit-item">
-        <view class="edit-label">服务日期</view>
-        <input class="edit-input" value="{{editForm.serviceDate}}" data-field="serviceDate" bindinput="onEditInput" placeholder="请输入日期"/>
-      </view>
-
-      <view class="edit-item">
-        <view class="edit-label">服务时间</view>
-        <input class="edit-input" value="{{editForm.serviceTime}}" data-field="serviceTime" bindinput="onEditInput" placeholder="请输入时间"/>
-      </view>
-    </block>
   </view>
 
   <!-- 地址信息 -->
   <view class="info-section">
     <view class="section-title">地址信息</view>
     
-    <!-- 查看模式 -->
-    <block wx:if="{{!isEditing}}">
       <view class="info-item">
         <view class="info-label">服务地址</view>
-        <view class="info-value">{{order.address}}</view>
+        <view class="info-value address-text">{{order.address}}</view>
+      </view>
+
+      <view class="info-item">
+        <view class="info-label">详细地址</view>
+        <view class="info-value address-text">{{order.city}} {{order.detailAddress}}</view>
       </view>
 
       <view class="info-item">
@@ -74,32 +51,33 @@
         <view class="info-value">{{order.contactName}}</view>
       </view>
 
-      <view class="info-item">
+      <view class="info-item" style="border-bottom: none;">
         <view class="info-label">联系电话</view>
         <view class="info-value">
           <text>{{hidePhone(order.contactPhone)}}</text>
-          <text class="call-link" bindtap="makeCall">拨打</text>
+          <text class="call-icon" bindtap="makeCall">📞</text>
         </view>
       </view>
-    </block>
-    
-    <!-- 编辑模式 -->
-    <block wx:if="{{isEditing}}">
-      <view class="edit-item">
-        <view class="edit-label">服务地址</view>
-        <input class="edit-input" value="{{editForm.address}}" data-field="address" bindinput="onEditInput" placeholder="请输入地址"/>
-      </view>
 
-      <view class="edit-item">
-        <view class="edit-label">联系人</view>
-        <input class="edit-input" value="{{editForm.contactName}}" data-field="contactName" bindinput="onEditInput" placeholder="请输入联系人"/>
+      <!-- 地图区域 -->
+      <view class="map-container" wx:if="{{order.latitude && order.longitude}}">
+        <map
+          class="location-map"
+          latitude="{{order.latitude}}"
+          longitude="{{order.longitude}}"
+          scale="{{order.useCurrentLocation ? 14 : 15}}"
+          show-location
+          markers="{{mapMarkers}}"
+          bindmarkertap="openNavigation"
+          bindtap="openNavigation"
+          enable-zoom
+          enable-scroll
+        ></map>
+        <view class="nav-btn-bar" bindtap="openNavigation">
+          <text class="nav-btn-icon">📍</text>
+          <text class="nav-btn-text">导航到此处</text>
+        </view>
       </view>
-
-      <view class="edit-item">
-        <view class="edit-label">联系电话</view>
-        <input class="edit-input" type="number" value="{{editForm.contactPhone}}" data-field="contactPhone" bindinput="onEditInput" placeholder="请输入联系电话"/>
-      </view>
-    </block>
   </view>
 
   <!-- 人员信息 -->
@@ -120,25 +98,47 @@
       <view class="info-label">接单人电话</view>
       <view class="info-value">
         <text>{{hidePhone(order.workerPhone)}}</text>
-        <text class="call-link" bindtap="callWorker">拨打</text>
+        <text class="call-icon" bindtap="callWorker">📞</text>
       </view>
     </view>
   </view>
 
   <!-- 备注信息 -->
-  <view class="info-section" wx:if="{{!isEditing && order.requirements}}">
+  <view class="info-section" wx:if="{{order.requirements}}">
     <view class="section-title">服务要求</view>
     <view class="requirements-text">{{order.requirements}}</view>
   </view>
-  
-  <!-- 编辑模式下的服务要求 -->
-  <view class="info-section" wx:if="{{isEditing}}">
-    <view class="section-title">服务要求</view>
-    <textarea class="edit-textarea" value="{{editForm.requirements}}" data-field="requirements" bindinput="onEditInput" placeholder="请输入服务要求"/>
+
+  <!-- 服务图片（只在服务完成状态显示） -->
+  <view class="info-section" wx:if="{{order.status === 'completed'}}">
+    <view class="section-title">
+      <text>服务图片</text>
+      <text class="image-count" wx:if="{{order.serviceImages && order.serviceImages.length > 0}}">({{order.serviceImages.length}}张)</text>
+    </view>
+    
+    <!-- 图片展示区域 -->
+    <view class="service-images" wx:if="{{order.serviceImages && order.serviceImages.length > 0}}">
+      <view 
+        class="image-item" 
+        wx:for="{{order.serviceImages}}" 
+        wx:key="index"
+        bindtap="previewImage"
+        data-url="{{item}}"
+        data-index="{{index}}"
+      >
+        <image src="{{item}}" mode="aspectFill" class="service-img"/>
+      </view>
+    </view>
+    
+    <!-- 无图片提示 -->
+    <view class="no-images" wx:if="{{!order.serviceImages || order.serviceImages.length === 0}}">
+      <text class="no-images-icon">📷</text>
+      <text class="no-images-text">暂无服务图片</text>
+    </view>
   </view>
 
   <!-- 编辑按钮（派单员可以编辑待接单订单） -->
-  <view class="action-section" wx:if="{{canEdit && !isEditing}}">
+  <view class="action-section" wx:if="{{canEdit}}">
     <button 
       class="action-btn edit-btn"
       bindtap="startEdit"
@@ -146,25 +146,9 @@
       编辑订单
     </button>
   </view>
-  
-  <!-- 编辑操作按钮 -->
-  <view class="action-section" wx:if="{{isEditing}}">
-    <button 
-      class="action-btn save-btn"
-      bindtap="saveEdit"
-    >
-      保存
-    </button>
-    <button 
-      class="action-btn cancel-edit-btn"
-      bindtap="cancelEdit"
-    >
-      取消
-    </button>
-  </view>
 
   <!-- 订单操作 -->
-  <view class="action-section" wx:if="{{showActions && !isEditing}}">
+  <view class="action-section" wx:if="{{showActions}}">
     <button 
       class="action-btn grab-btn"
       wx:if="{{order.status === 'pending' && canGrab}}"

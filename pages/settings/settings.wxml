@@ -1,5 +1,22 @@
 <!-- pages/settings/settings.wxml -->
 <view class="container">
+  <!-- 地址管理 -->
+  <view class="settings-section">
+    <view class="section-title">地址管理</view>
+    <view class="settings-list">
+      <view class="setting-item" bindtap="goToAddressManage">
+        <view class="setting-left">
+          <text class="setting-icon">📍</text>
+          <text class="setting-name">地址管理</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-value" wx:if="{{defaultCity}}">{{defaultCity}}</text>
+          <text class="setting-arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 通用设置 -->
   <view class="settings-section">
     <view class="section-title">通用设置</view>

@@ -34,16 +34,33 @@ Page({
     canCancel: false,
     canComplete: false,
     canEdit: false,
-    isEditing: false,
-    editForm: {}
+    canUploadImage: false,
+    mapMarkers: [],
+    hasLoaded: false // 标记是否已加载过，避免 onShow 重复加载
   },
 
   onLoad(options) {
     if (options.id) {
-      this.setData({ orderId: options.id });
+      this.setData({ 
+        orderId: options.id,
+        hasLoaded: false
+      });
       this.loadOrderDetail();
     } else {
       this.setData({ error: true, loading: false });
+    }
+  },
+
+  onShow() {
+    // 页面显示时检查是否需要刷新订单数据
+    if (this.data.orderId && this.data.hasLoaded) {
+      // 检查全局数据中是否有订单需要刷新
+      const app = getApp();
+      if (app.globalData.needRefreshOrders && app.globalData.needRefreshOrders[this.data.orderId]) {
+        this.loadOrderDetail();
+        // 清除刷新标志
+        delete app.globalData.needRefreshOrders[this.data.orderId];
+      }
     }
   },
 
@@ -51,7 +68,7 @@ Page({
   async loadOrderDetail() {
     try {
       const order = await CloudStorage.getOrder(this.data.orderId);
-      
+
       if (!order) {
         this.setData({ error: true, loading: false });
         return;
@@ -59,6 +76,29 @@ Page({
 
       // 转换服务类型名称
       order.serviceTypeName = Util.serviceTypeMap[order.serviceType] || order.serviceType;
+
+      // 将 fileID 转为临时访问链接用于展示
+      if (order.serviceImages && order.serviceImages.length > 0) {
+        try {
+          const res = await wx.cloud.getTempFileURL({ fileList: order.serviceImages });
+          order.serviceImages = res.fileList.map(f => f.tempFileURL || f.fileID);
+        } catch (e) {
+          console.error('获取图片链接失败:', e);
+        }
+      }
+
+      // 如果没有经纬度，获取用户当前位置
+      if (!order.latitude || !order.longitude) {
+        try {
+          const locationRes = await wx.getLocation({ type: 'gcj02' });
+          order.latitude = locationRes.latitude;
+          order.longitude = locationRes.longitude;
+          order.useCurrentLocation = true;
+        } catch (e) {
+          console.log('获取当前位置失败');
+          wx.showToast({ title: '获取位置失败，请检查定位权限', icon: 'none' });
+        }
+      }
 
       // 判断权限和操作
       const userRole = app.globalData.userRole;
@@ -93,6 +133,35 @@ Page({
         canEdit = true;
       }
 
+      // 判断是否可以上传服务图片（只有接单阿姨在服务中状态可以上传）
+      let canUploadImage = false;
+      if (userRole === 'worker' && order.workerId === userId && order.status === 'accepted') {
+        canUploadImage = true;
+      }
+
+      // 构建地图标记点
+      let mapMarkers = [];
+      if (order.latitude && order.longitude) {
+        const markerTitle = order.useCurrentLocation ? '您的位置' : order.address || '服务地址';
+        mapMarkers = [{
+          id: 1,
+          latitude: order.latitude,
+          longitude: order.longitude,
+          title: markerTitle,
+          width: 36,
+          height: 36,
+          callout: {
+            content: markerTitle,
+            color: '#333333',
+            fontSize: 13,
+            borderRadius: 6,
+            bgColor: '#ffffff',
+            padding: 8,
+            display: 'ALWAYS'
+          }
+        }];
+      }
+
       this.setData({
         order,
         loading: false,
@@ -102,17 +171,9 @@ Page({
         canCancel,
         canComplete,
         canEdit,
-        editForm: {
-          serviceType: order.serviceType,
-          price: order.price,
-          duration: order.duration,
-          serviceDate: order.serviceDate,
-          serviceTime: order.serviceTime,
-          address: order.address,
-          contactName: order.contactName,
-          contactPhone: order.contactPhone,
-          requirements: order.requirements
-        }
+        canUploadImage,
+        mapMarkers,
+        hasLoaded: true // 标记已加载完成
       });
     } catch (e) {
       console.error('加载订单详情失败:', e);
@@ -221,6 +282,55 @@ Page({
     });
   },
 
+  // 点击地图开启导航
+  openNavigation() {
+    const { order } = this.data;
+    if (!order.latitude || !order.longitude) {
+      wx.showToast({ title: '暂无位置信息', icon: 'none' });
+      return;
+    }
+    wx.openLocation({
+      latitude: order.latitude,
+      longitude: order.longitude,
+      name: order.useCurrentLocation ? '您的位置' : order.address || '服务地址',
+      address: order.address || '',
+      scale: 16
+    });
+  },
+
+  // 无经纬度时通过地址文字打开导航（腾讯地图搜索）
+  openNavigationByAddress() {
+    const { order } = this.data;
+    if (!order.address) {
+      wx.showToast({ title: '暂无地址信息', icon: 'none' });
+      return;
+    }
+    // 用 scheme 调起腾讯地图 / 系统地图搜索
+    wx.showActionSheet({
+      itemList: ['腾讯地图', '高德地图', '百度地图'],
+      success: (res) => {
+        const address = encodeURIComponent(order.address);
+        const name = encodeURIComponent(order.address);
+        const schemes = [
+          `qqmap://map/routeplan?type=drive&to=${name}&tocoord=&referer=housework`,
+          `iosamap://path?sourceApplication=housework&dname=${name}&dev=1`,
+          `baidumap://map/direction?destination=name:${name}&mode=driving&coord_type=gcj02`
+        ];
+        const scheme = schemes[res.tapIndex];
+        wx.setClipboardData({
+          data: order.address,
+          success: () => {
+            wx.showModal({
+              title: '地址已复制',
+              content: `"${order.address}" 已复制到剪贴板，请在地图APP中粘贴搜索`,
+              showCancel: false
+            });
+          }
+        });
+      }
+    });
+  },
+
   // 拨打客户电话
   makeCall() {
     if (this.data.order && this.data.order.contactPhone) {
@@ -262,61 +372,100 @@ Page({
     return phone.substring(0, 3) + '****' + phone.substring(7);
   },
 
-  // 进入编辑模式
+  // 进入编辑模式 - 跳转到派单页面编辑
   startEdit() {
-    this.setData({ isEditing: true });
+    const { orderId } = this.data;
+    wx.navigateTo({
+      url: `/pages/dispatcher/publish/publish?orderId=${orderId}&mode=edit`
+    });
   },
 
-  // 取消编辑
-  cancelEdit() {
-    const { order } = this.data;
-    this.setData({
-      isEditing: false,
-      editForm: {
-        serviceType: order.serviceType,
-        price: order.price,
-        duration: order.duration,
-        serviceDate: order.serviceDate,
-        serviceTime: order.serviceTime,
-        address: order.address,
-        contactName: order.contactName,
-        contactPhone: order.contactPhone,
-        requirements: order.requirements
+  // 选择并上传服务图片
+  chooseServiceImage() {
+    wx.chooseImage({
+      count: 9, // 最多可选9张
+      sizeType: ['compressed'], // 压缩图
+      sourceType: ['camera', 'album'], // 相机或相册
+      success: (res) => {
+        const tempFilePaths = res.tempFilePaths;
+        this.uploadServiceImages(tempFilePaths);
       }
     });
   },
 
-  // 编辑表单输入
-  onEditInput(e) {
-    const field = e.currentTarget.dataset.field;
-    const value = e.detail.value;
-    this.setData({
-      [`editForm.${field}`]: value
+  // 上传服务图片到云对象存储
+  async uploadServiceImages(filePaths) {
+    wx.showLoading({ title: `上传中 0/${filePaths.length}` });
+    
+    try {
+      const fileIDs = [];
+      for (let i = 0; i < filePaths.length; i++) {
+        const filePath = filePaths[i];
+        const ext = filePath.split('.').pop() || 'jpg';
+        const cloudPath = `service-images/${this.data.orderId}/${Date.now()}-${Math.random().toString(36).substr(2, 6)}.${ext}`;
+        
+        wx.showLoading({ title: `上传中 ${i + 1}/${filePaths.length}` });
+        
+        const res = await wx.cloud.uploadFile({ cloudPath, filePath });
+        fileIDs.push(res.fileID);
+      }
+      
+      // 保存 fileID 到订单（不存临时链接，fileID 永久有效）
+      const result = await CloudStorage.uploadServiceImages(this.data.orderId, fileIDs);
+      
+      wx.hideLoading();
+      
+      if (result.success) {
+        wx.showToast({ title: '上传成功', icon: 'success' });
+        this.loadOrderDetail();
+      } else {
+        wx.showToast({ title: result.message || '上传失败', icon: 'none' });
+      }
+    } catch (e) {
+      console.error('上传图片失败:', e);
+      wx.hideLoading();
+      wx.showToast({ title: '上传失败，请重试', icon: 'none' });
+    }
+  },
+
+  // 预览图片（serviceImages 此时已是临时链接）
+  previewImage(e) {
+    const { url } = e.currentTarget.dataset;
+    const urls = this.data.order.serviceImages || [];
+    wx.previewImage({
+      current: url,
+      urls: urls
     });
   },
 
-  // 保存编辑
-  async saveEdit() {
-    const { orderId, editForm } = this.data;
-    
-    wx.showLoading({ title: '保存中...' });
-    
-    const result = await CloudStorage.updateOrder(orderId, editForm);
-    
-    wx.hideLoading();
-    
-    if (result) {
-      wx.showToast({
-        title: '保存成功',
-        icon: 'success'
-      });
-      this.setData({ isEditing: false });
-      this.loadOrderDetail();
-    } else {
-      wx.showToast({
-        title: '保存失败',
-        icon: 'none'
-      });
+  // 分享订单
+  onShareAppMessage() {
+    const { order } = this.data;
+    if (!order) {
+      return {
+        title: '家政服务订单',
+        path: '/pages/index/index'
+      };
     }
+    const title = `【家政招单】${order.serviceTypeName}｜¥${order.price}｜${order.city || ''}`;
+
+    // 用腾讯地图静态图 API 生成带地图标注的分享封面
+    let imageUrl = '';
+    if (order.latitude && order.longitude) {
+      const lat = order.latitude;
+      const lng = order.longitude;
+      const key = 'LWQBZ-SLH6F-VNOJD-N2ZI5-DA3YE-CKBR2';
+      // 分享卡片地图上只显示基础地址（取前8个字以内）
+      const addressLabel = order.address ? order.address.substring(0, 8) : '地址';
+      // 使用红色定位标记 + 黑色地址文字
+      const random = Math.floor(Math.random() * 10000);
+      imageUrl = `https://apis.map.qq.com/ws/staticmap/v2/?center=${lat},${lng}&zoom=15&size=600*300&markers=size:large|color:0xFF0000|${lat},${lng}&labels=size:16|color:0x000000|anchor:3|${addressLabel}|${lat},${lng}&key=${key}&_r=${random}`;
+    }
+
+    return {
+      title: title,
+      path: `/pages/orderDetail/orderDetail?id=${order._id || order.orderId}`,
+      imageUrl: imageUrl
+    };
   }
 });

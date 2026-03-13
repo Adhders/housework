@@ -1,6 +1,4 @@
 {
   "navigationBarTitleText": "首页",
-  "usingComponents": {
-    "city-picker": "/components/city-picker/city-picker"
-  }
+  "usingComponents": {}
 }

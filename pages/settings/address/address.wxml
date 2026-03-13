@@ -1,0 +1,26 @@
+<!-- pages/settings/address/address.wxml -->
+<view class="container">
+  <!-- 当前工作城市 -->
+  <view class="city-card">
+    <view class="city-title">当前工作城市</view>
+    <view class="city-display">
+      <text class="city-name">{{city || '未设置'}}</text>
+      <button class="edit-btn" bindtap="editCity" wx:if="{{city}}">修改</button>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!city}}">
+    <text class="empty-icon">🏙️</text>
+    <text class="empty-text">还未设置工作城市</text>
+    <text class="empty-desc">设置城市以接收附近订单</text>
+  </view>
+
+  <!-- 添加城市按钮 -->
+  <view class="add-btn-container" wx:if="{{!city}}">
+    <button class="add-btn" bindtap="addCity">设置工作城市</button>
+  </view>
+</view>
+
+
+

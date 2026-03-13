@@ -152,6 +152,40 @@ Page({
     });
   },
 
+  // 回退订单（将已接单订单回退到待接单）
+  async revertOrder(e) {
+    const orderId = e.currentTarget.dataset.id;
+
+    wx.showModal({
+      title: '确认回退',
+      content: '确定要将此订单回退到未接单状态吗？\n回退后订单将重新对外开放接单。',
+      confirmText: '确认回退',
+      confirmColor: '#f44336',
+      success: async (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '处理中...' });
+          
+          const result = await CloudStorage.revertOrder(orderId);
+          
+          wx.hideLoading();
+
+          if (result.success) {
+            wx.showToast({
+              title: '回退成功',
+              icon: 'success'
+            });
+            this.loadOrders();
+          } else {
+            wx.showToast({
+              title: result.message || '回退失败',
+              icon: 'none'
+            });
+          }
+        }
+      }
+    });
+  },
+
   // 拨打电话
   makeCall(e) {
     const phone = e.currentTarget.dataset.phone;

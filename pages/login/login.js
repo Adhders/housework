@@ -36,7 +36,7 @@ Page({
   reverseGeocoder(latitude, longitude) {
     // 使用微信地图SDK进行逆地址解析
     wx.request({
-      url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${latitude},${longitude}&key=YOUR_KEY`,
+      url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${latitude},${longitude}&key=LWQBZ-SLH6F-VNOJD-N2ZI5-DA3YE-CKBR2`,
       success: (res) => {
         let city = '北京市';
         if (res.data && res.data.result && res.data.result.address_component) {

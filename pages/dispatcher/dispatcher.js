@@ -80,6 +80,13 @@ Page({
     });
   },
 
+  // 跳转到阿姨管理
+  goToWorkers() {
+    wx.navigateTo({
+      url: '/pages/dispatcher/workers/workers'
+    });
+  },
+
   // 查看订单详情
   viewOrderDetail(e) {
     const orderId = e.currentTarget.dataset.id;

@@ -1,0 +1,29 @@
+<!-- pages/settings/address-edit/address-edit.wxml -->
+<view class="container">
+  <view class="form-section">
+    <view class="form-title">设置工作城市</view>
+    
+    <view class="form-item" bindtap="openCityPicker">
+      <text class="form-label">工作城市</text>
+      <view class="picker-value">
+        <text class="{{city ? '' : 'placeholder'}}">{{city || '请选择工作城市'}}</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="save-btn-container">
+    <button class="save-btn" bindtap="saveCity">保存城市</button>
+  </view>
+
+  <!-- 城市选择器 -->
+  <city-picker 
+    show="{{showCityPicker}}" 
+    selectedCity="{{selectedCity}}"
+    bind:cityselect="onCitySelect"
+    bind:close="onCityPickerClose"
+  />
+</view>
+
+
+

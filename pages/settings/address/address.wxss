@@ -1,0 +1,87 @@
+/* pages/settings/address/address.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 100rpx;
+}
+
+.city-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.city-title {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+.city-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.city-name {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.edit-btn {
+  font-size: 28rpx;
+  padding: 16rpx 32rpx;
+  border-radius: 8rpx;
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #ccc;
+}
+
+.add-btn-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.add-btn {
+  width: 100%;
+  background: #07c160;
+  color: #fff;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  border-radius: 44rpx;
+}
+

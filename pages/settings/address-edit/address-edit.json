@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "设置工作城市",
+  "usingComponents": {
+    "city-picker": "/components/city-picker/city-picker"
+  }
+}

@@ -4,9 +4,13 @@
     "pages/login/login",
     "pages/profile/profile",
     "pages/settings/settings",
+    "pages/settings/address/address",
+    "pages/settings/address-edit/address-edit",
     "pages/dispatcher/dispatcher",
     "pages/dispatcher/publish/publish",
     "pages/dispatcher/manage/manage",
+    "pages/dispatcher/workers/workers",
+    "pages/dispatcher/stats/stats",
     "pages/worker/worker",
     "pages/worker/myOrders/myOrders",
     "pages/orderDetail/orderDetail"

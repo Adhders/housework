@@ -1,0 +1,169 @@
+<!-- pages/dispatcher/workers/workers.wxml -->
+<view class="container">
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-item">
+      <view class="stats-num">{{workers.length}}</view>
+      <view class="stats-label">合作阿姨</view>
+    </view>
+    <view class="stats-item">
+      <view class="stats-num">{{avgRating}}</view>
+      <view class="stats-label">平均评分</view>
+    </view>
+    <view class="stats-item">
+      <view class="stats-num">{{totalOrders}}</view>
+      <view class="stats-label">服务订单</view>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input 
+      class="search-input" 
+      placeholder="搜索阿姨姓名"
+      value="{{searchKey}}"
+      bindinput="onSearchInput"
+    />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <!-- 阿姨列表 -->
+  <view class="worker-list">
+    <block wx:if="{{filteredWorkers.length > 0}}">
+      <view 
+        class="worker-item" 
+        wx:for="{{filteredWorkers}}" 
+        wx:key="_id"
+        bindtap="goToWorkerDetail"
+        data-id="{{item._id}}"
+      >
+        <view class="worker-header">
+          <view class="worker-avatar">
+            <image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill"/>
+            <text wx:else>{{item.name ? item.name[0] : '?'}}</text>
+          </view>
+          <view class="worker-info">
+            <view class="worker-name">{{item.name || '未命名'}}</view>
+            <view class="worker-phone">{{item.phone || '暂无电话'}}</view>
+          </view>
+          <view class="worker-rating">
+            <text class="rating-star">⭐</text>
+            <text class="rating-score">{{item.rating || '5.0'}}</text>
+          </view>
+        </view>
+        
+        <view class="worker-stats">
+          <view class="stat-item">
+            <text class="stat-label">完成订单</text>
+            <text class="stat-value">{{item.completedOrders || 0}}</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-label">服务城市</text>
+            <text class="stat-value">{{item.city || '-'}}</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-label">加入时间</text>
+            <text class="stat-value">{{item.joinTime || '-'}}</text>
+          </view>
+        </view>
+
+        <view class="worker-actions">
+          <view class="action-btn evaluate-btn" catchtap="openEvaluateModal" data-worker="{{item}}">
+            <text class="btn-icon">⭐</text>
+            <text>评价</text>
+          </view>
+          <view class="action-btn history-btn" catchtap="viewHistory" data-worker="{{item}}">
+            <text class="btn-icon">📋</text>
+            <text>订单记录</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">👷‍♀️</text>
+      <text class="empty-text">暂无阿姨数据</text>
+    </view>
+  </view>
+</view>
+
+<!-- 评价弹窗 -->
+<view class="modal" wx:if="{{showEvaluateModal}}">
+  <view class="modal-mask" bindtap="closeEvaluateModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">评价阿姨</text>
+      <text class="modal-close" bindtap="closeEvaluateModal">✕</text>
+    </view>
+    
+    <view class="modal-body">
+      <view class="evaluate-worker">
+        <view class="evaluate-avatar">
+          <text>{{currentWorker.name ? currentWorker.name[0] : '?'}}</text>
+        </view>
+        <view class="evaluate-name">{{currentWorker.name}}</view>
+      </view>
+
+      <!-- 星级评分 -->
+      <view class="rating-section">
+        <view class="section-label">服务态度</view>
+        <view class="star-rating">
+          <text 
+            class="star {{evaluateForm.attitude >= item ? 'active' : ''}}" 
+            wx:for="[1,2,3,4,5]" 
+            wx:key="*this"
+            bindtap="setRating"
+            data-field="attitude"
+            data-value="{{item}}"
+          >★</text>
+        </view>
+      </view>
+
+      <view class="rating-section">
+        <view class="section-label">服务质量</view>
+        <view class="star-rating">
+          <text 
+            class="star {{evaluateForm.quality >= item ? 'active' : ''}}" 
+            wx:for="[1,2,3,4,5]" 
+            wx:key="*this"
+            bindtap="setRating"
+            data-field="quality"
+            data-value="{{item}}"
+          >★</text>
+        </view>
+      </view>
+
+      <view class="rating-section">
+        <view class="section-label">准时程度</view>
+        <view class="star-rating">
+          <text 
+            class="star {{evaluateForm.punctuality >= item ? 'active' : ''}}" 
+            wx:for="[1,2,3,4,5]" 
+            wx:key="*this"
+            bindtap="setRating"
+            data-field="punctuality"
+            data-value="{{item}}"
+          >★</text>
+        </view>
+      </view>
+
+      <!-- 评价内容 -->
+      <view class="comment-section">
+        <view class="section-label">评价内容</view>
+        <textarea 
+          class="comment-input" 
+          placeholder="请输入评价内容（选填）"
+          value="{{evaluateForm.comment}}"
+          bindinput="onCommentInput"
+          maxlength="200"
+        />
+        <view class="char-count">{{evaluateForm.comment.length}}/200</view>
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <button class="submit-btn" bindtap="submitEvaluate">提交评价</button>
+    </view>
+  </view>
+</view>

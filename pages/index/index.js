@@ -9,7 +9,6 @@ Page({
     currentFilter: 'all',
     currentCategory: 'all',
     currentCategoryColor: '#4CAF50',
-    currentCity: '北京市',
     orders: [],
     filteredOrders: [],
     searchKeyword: '',
@@ -18,9 +17,12 @@ Page({
     statusColor: Util.orderStatusColor,
     categories: Util.serviceCategories,
     showFilterBar: false, // 是否显示状态筛选栏（派单员显示，家政阿姨不显示）
-    cities: ['北京市', '天津市', '上海市', '重庆市', '石家庄市', '太原市', '呼和浩特市', '沈阳市', '大连市', '长春市', '哈尔滨市', '南京市', '苏州市', '杭州市', '宁波市', '合肥市', '福州市', '厦门市', '南昌市', '济南市', '青岛市', '郑州市', '武汉市', '长沙市', '广州市', '深圳市', '南宁市', '海口市', '成都市', '贵阳市', '昆明市', '拉萨市', '西安市', '兰州市', '西宁市', '银川市', '乌鲁木齐市', '唐山市', '秦皇岛市', '邯郸市', '保定市', '张家口市', '承德市', '沧州市', '廊坊市', '衡水市', '大同市', '阳泉市', '长治市', '晋城市', '朔州市', '晋中市', '运城市', '忻州市', '临汾市', '吕梁市', '包头市', '乌海市', '赤峰市', '通辽市', '鄂尔多斯市', '呼伦贝尔市', '巴彦淖尔市', '乌兰察布市', '鞍山市', '抚顺市', '本溪市', '丹东市', '锦州市', '营口市', '阜新市', '辽阳市', '盘锦市', '铁岭市', '朝阳市', '葫芦岛市', '吉林市', '四平市', '辽源市', '通化市', '白山市', '松原市', '白城市', '齐齐哈尔市', '鸡西市', '鹤岗市', '双鸭山市', '大庆市', '伊春市', '佳木斯市', '七台河市', '牡丹江市', '黑河市', '绥化市', '无锡市', '徐州市', '常州市', '南通市', '连云港市', '淮安市', '盐城市', '扬州市', '镇江市', '泰州市', '宿迁市', '温州市', '嘉兴市', '湖州市', '绍兴市', '金华市', '衢州市', '舟山市', '台州市', '丽水市', '芜湖市', '蚌埠市', '淮南市', '马鞍山市', '淮北市', '铜陵市', '安庆市', '黄山市', '滁州市', '阜阳市', '宿州市', '六安市', '亳州市', '池州市', '宣城市', '莆田市', '三明市', '泉州市', '漳州市', '南平市', '龙岩市', '宁德市', '景德镇市', '萍乡市', '九江市', '新余市', '鹰潭市', '赣州市', '吉安市', '宜春市', '抚州市', '上饶市', '淄博市', '枣庄市', '东营市', '烟台市', '潍坊市', '济宁市', '泰安市', '威海市', '日照市', '莱芜市', '临沂市', '德州市', '聊城市', '滨州市', '菏泽市', '开封市', '洛阳市', '平顶山市', '安阳市', '鹤壁市', '新乡市', '焦作市', '濮阳市', '许昌市', '漯河市', '三门峡市', '南阳市', '商丘市', '信阳市', '周口市', '驻马店市', '黄石市', '十堰市', '宜昌市', '襄阳市', '鄂州市', '荆门市', '孝感市', '荆州市', '黄冈市', '咸宁市', '随州市', '株洲市', '湘潭市', '衡阳市', '邵阳市', '岳阳市', '常德市', '张家界市', '益阳市', '郴州市', '永州市', '怀化市', '娄底市', '珠海市', '汕头市', '佛山市', '韶关市', '湛江市', '肇庆市', '江门市', '茂名市', '惠州市', '梅州市', '汕尾市', '河源市', '阳江市', '清远市', '东莞市', '中山市', '潮州市', '揭阳市', '云浮市', '柳州市', '桂林市', '梧州市', '北海市', '防城港市', '钦州市', '贵港市', '玉林市', '百色市', '贺州市', '河池市', '来宾市', '崇左市', '三亚市', '三沙市', '儋州市', '自贡市', '攀枝花市', '泸州市', '德阳市', '绵阳市', '广元市', '遂宁市', '内江市', '乐山市', '南充市', '眉山市', '宜宾市', '广安市', '达州市', '雅安市', '巴中市', '资阳市', '六盘水市', '遵义市', '安顺市', '毕节市', '铜仁市', '曲靖市', '玉溪市', '保山市', '昭通市', '丽江市', '普洱市', '临沧市', '铜川市', '宝鸡市', '咸阳市', '渭南市', '延安市', '汉中市', '榆林市', '安康市', '商洛市', '嘉峪关市', '金昌市', '白银市', '天水市', '武威市', '张掖市', '平凉市', '酒泉市', '庆阳市', '定西市', '陇南市', '海东市', '石嘴山市', '吴忠市', '固原市', '中卫市', '克拉玛依市', '吐鲁番市', '哈密市', '昌吉市', '阜康市', '博乐市', '阿拉山口市', '库尔勒市', '阿克苏市', '阿图什市', '喀什市', '和田市', '伊宁市', '奎屯市', '霍尔果斯市', '塔城市', '乌苏市', '阿勒泰市', '石河子市', '阿拉尔市', '图木舒克市', '五家渠市', '北屯市', '铁门关市', '双河市', '可克达拉市', '昆玉市', '胡杨河市', '新星市'],
-    userCity: '', // 用户当前所在城市
-    locationLoaded: false // 定位是否完成
+    // 排序相关
+    sortType: 'time', // time: 按时间, distance: 按距离
+    sortTypeName: '按预约时间',
+    showSortPopup: false,
+    userLatitude: '',
+    userLongitude: ''
   },
 
   onLoad() {
@@ -32,86 +34,59 @@ Page({
     });
   },
 
+  // 显示排序选项
+  showSortOptions() {
+    this.setData({ showSortPopup: true });
+  },
+
+  // 隐藏排序选项
+  hideSortOptions() {
+    this.setData({ showSortPopup: false });
+  },
+
+  // 选择排序方式
+  selectSort(e) {
+    const type = e.currentTarget.dataset.type;
+    const typeName = type === 'time' ? '按预约时间' : '按距离远近';
+    this.setData({
+      sortType: type,
+      sortTypeName: typeName,
+      showSortPopup: false
+    }, () => {
+      this.filterOrders();
+    });
+  },
+
+  // 计算两点间距离（公里）
+  calculateDistance(lat1, lng1, lat2, lng2) {
+    const radLat1 = lat1 * Math.PI / 180.0;
+    const radLat2 = lat2 * Math.PI / 180.0;
+    const a = radLat1 - radLat2;
+    const b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+    let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+      Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+    s = s * 6378.137; // 地球半径
+    s = Math.round(s * 10000) / 10000;
+    return s;
+  },
+
   onShow() {
     this.loadOrders();
   },
 
   // 获取用户地理位置
   getUserLocation() {
-    // 使用腾讯地图SDK或微信位置API获取城市信息
     wx.getLocation({
       type: 'gcj02',
       success: (res) => {
-        // 使用微信内置的逆地址解析获取城市
-        this.reverseGeocoder(res.latitude, res.longitude);
+        this.setData({
+          userLatitude: res.latitude,
+          userLongitude: res.longitude
+        });
       },
       fail: () => {
-        // 获取位置失败，使用默认城市
-        this.setData({
-          userCity: '北京市',
-          currentCity: '北京市',
-          locationLoaded: true
-        }, () => {
-          this.loadOrders();
-        });
+        console.log('获取位置失败');
       }
-    });
-  },
-
-  // 逆地址解析获取城市
-  reverseGeocoder(latitude, longitude) {
-    // 注意：这里需要申请腾讯地图API密钥
-    // 临时方案：根据坐标范围粗略判断城市
-    // 正式环境请申请密钥：https://lbs.qq.com/
-    
-    // 简单根据经纬度判断主要城市（示例）
-    let city = '北京市'; // 默认值
-    
-    // 北京范围
-    if (latitude >= 39.4 && latitude <= 41.1 && longitude >= 115.7 && longitude <= 117.4) {
-      city = '北京市';
-    }
-    // 上海范围
-    else if (latitude >= 30.7 && latitude <= 31.9 && longitude >= 120.9 && longitude <= 122.2) {
-      city = '上海市';
-    }
-    // 广州范围
-    else if (latitude >= 22.5 && latitude <= 23.8 && longitude >= 112.9 && longitude <= 114.1) {
-      city = '广州市';
-    }
-    // 深圳范围
-    else if (latitude >= 22.5 && latitude <= 22.9 && longitude >= 113.8 && longitude <= 114.6) {
-      city = '深圳市';
-    }
-    // 其他城市可以继续添加...
-    
-    this.setData({
-      userCity: city,
-      currentCity: city,
-      locationLoaded: true
-    }, () => {
-      this.loadOrders();
-    });
-  },
-
-  // 显示城市选择器
-  showCityPicker() {
-    this.setData({ showCityPicker: true });
-  },
-
-  // 隐藏城市选择器
-  hideCityPicker() {
-    this.setData({ showCityPicker: false });
-  },
-
-  // 城市选择器回调
-  onCitySelect(e) {
-    const city = e.detail.city;
-    this.setData({
-      currentCity: city,
-      showCityPicker: false
-    }, () => {
-      this.filterOrders();
     });
   },
 
@@ -131,17 +106,6 @@ Page({
       let showFilterBar = false;
       let defaultFilter = 'all';
 
-      // 获取用户所在城市，默认使用用户资料中的城市
-      let userCity = app.globalData.userInfo && app.globalData.userInfo.city ? app.globalData.userInfo.city : '北京市';
-      // 统一城市格式，去掉"市"字
-      userCity = userCity.replace('市', '');
-      
-      // 设置当前城市为用户所在城市
-      this.setData({
-        currentCity: userCity,
-        userCity: userCity
-      });
-
       if (app.globalData.userRole === 'dispatcher') {
         // 派单员看所有订单，显示状态筛选栏
         orders = await CloudStorage.getDispatcherOrders(app.globalData.userId);
@@ -150,8 +114,7 @@ Page({
         showFilterBar = true;
       } else {
         // 家政阿姨只看待接单订单，不显示状态筛选栏
-        // 只显示阿姨所在城市的订单
-        orders = await CloudStorage.getAvailableOrders(userCity);
+        orders = await CloudStorage.getAvailableOrders();
         // 只保留待接单状态的订单
         orders = orders.filter(order => order.status === 'pending');
         showFilterBar = false;
@@ -171,6 +134,8 @@ Page({
           serviceTime: order.serviceTime,
           address: order.address,
           city: order.city,
+          latitude: order.latitude,
+          longitude: order.longitude,
           contactName: order.contactName,
           contactPhone: order.contactPhone,
           requirements: order.requirements,
@@ -220,23 +185,11 @@ Page({
 
   // 筛选订单
   filterOrders() {
-    const { orders, currentFilter, searchKeyword, currentCategory, showFilterBar, currentCity, userRole } = this.data;
+    const { orders, currentFilter, searchKeyword, currentCategory, showFilterBar, sortType, userLatitude, userLongitude } = this.data;
 
-    let filteredOrders = orders;
+    let filteredOrders = [...orders];
 
-    // 按城市筛选 - 必须选择具体城市
-    if (userRole === 'worker') {
-      // 家政阿姨按选择的城市筛选订单
-      const selectedCity = currentCity.replace(/市$/, '');
-      filteredOrders = filteredOrders.filter(order => {
-        // 使用订单的city字段进行匹配
-        const orderCity = order.city ? order.city.replace(/市$/, '') : '';
-        return orderCity === selectedCity;
-      });
-    }
-    // 派单员不按城市筛选，查看所有城市的订单
-
-    // 再按业务分类筛选
+    // 按业务分类筛选
     if (currentCategory !== 'all') {
       const categoryTypes = this.data.categories[currentCategory]?.types || [];
       filteredOrders = filteredOrders.filter(order =>
@@ -249,7 +202,7 @@ Page({
       filteredOrders = filteredOrders.filter(order => order.status === currentFilter);
     }
 
-    // 最后按关键词搜索
+    // 按关键词搜索
     if (searchKeyword) {
       const keyword = searchKeyword.toLowerCase().trim();
       filteredOrders = filteredOrders.filter(order => {
@@ -257,6 +210,23 @@ Page({
                (order.contactName && order.contactName.toLowerCase().includes(keyword)) ||
                (order.contactPhone && order.contactPhone.includes(keyword)) ||
                (order.serviceTypeName && order.serviceTypeName.toLowerCase().includes(keyword));
+      });
+    }
+
+    // 排序
+    if (sortType === 'time') {
+      // 按预约时间排序（最近的在前）
+      filteredOrders.sort((a, b) => {
+        const timeA = a.serviceTime ? new Date(a.serviceTime.replace(/-/g, '/')).getTime() : 0;
+        const timeB = b.serviceTime ? new Date(b.serviceTime.replace(/-/g, '/')).getTime() : 0;
+        return timeA - timeB;
+      });
+    } else if (sortType === 'distance' && userLatitude && userLongitude) {
+      // 按距离排序（最近的在前）
+      filteredOrders.sort((a, b) => {
+        const distA = this.calculateDistance(userLatitude, userLongitude, a.latitude, a.longitude);
+        const distB = this.calculateDistance(userLatitude, userLongitude, b.latitude, b.longitude);
+        return distA - distB;
       });
     }
 
@@ -356,6 +326,23 @@ Page({
   async grabOrder(e) {
     const orderId = e.currentTarget.dataset.id;
 
+    // 显示警告提示弹窗
+    wx.showModal({
+      title: '⚠️ 接单须知',
+      content: '接单后请务必按时上门服务！\n\n多次接单后不上门服务，系统将限制您的接单权限。',
+      confirmText: '我知道了',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户确认后，再次确认抢单
+          this.confirmGrabOrder(orderId);
+        }
+      }
+    });
+  },
+
+  // 确认抢单
+  async confirmGrabOrder(orderId) {
     wx.showModal({
       title: '确认抢单',
       content: '确定要接这个订单吗？',
@@ -482,23 +469,45 @@ Page({
   },
 
   // 微信转发分享（右上角菜单 & 分享按钮均会触发）
+  // 微信转发分享（右上角菜单 & 分享按钮均会触发）
   onShareAppMessage(res) {
+    console.log('onShareAppMessage called from index.js', res);
     let order = null;
-
-    if (res.from === 'button' && this._shareOrder) {
-      // 来自页面内分享按钮
+    // 从按钮的 dataset 中获取订单数据
+    if (res.from === 'button' && res.target.dataset.order) {
+      order = res.target.dataset.order;
+    } else if (this._shareOrder) {
+      // 兼容非按钮分享（如右上角菜单）
       order = this._shareOrder;
       this._shareOrder = null;
     }
 
+    console.log('Order data for sharing:', order);
+
     if (order) {
-      // 构造分享标题：服务类型 + 价格 + 地址简要
-      const title = `【家政招单】${order.serviceTypeName}｜¥${order.price}｜${order.city || ''}`;
-      const desc = order.address ? order.address.substring(0, 20) : '';
+      // 构造分享内容：只显示订单信息
+      const title = `【家政招单】${order.serviceTypeName}｜¥${order.price}`;
+      // 用腾讯地图静态图 API 生成带地图标注的分享封面
+      let imageUrl = '';
+      if (order.latitude && order.longitude) {
+        const lat = order.latitude;
+        const lng = order.longitude;
+        const key = 'LWQBZ-SLH6F-VNOJD-N2ZI5-DA3YE-CKBR2';
+        // 分享卡片地图上只显示基础地址（取前8个字以内）
+        const addressLabel = order.address ? order.address.substring(0, 8) : '地址';
+        // 使用红色定位标记 + 黑色地址文字
+        const random = Math.floor(Math.random() * 10000);
+        imageUrl = `https://apis.map.qq.com/ws/staticmap/v2/?center=${lat},${lng}&zoom=15&size=600*300&markers=size:large|color:0xFF0000|${lat},${lng}&labels=size:16|color:0x000000|anchor:3|${addressLabel}|${lat},${lng}&key=${key}&_r=${random}`;
+        console.log('Tencent Static Map URL (index.js):', imageUrl);
+        console.log('Latitude (index.js):', lat, 'Longitude (index.js):', lng);
+      } else {
+        console.log('Latitude or Longitude is missing for order in index.js. Latitude:', order.latitude, 'Longitude:', order.longitude);
+      }
+      console.log('Final imageUrl for sharing:', imageUrl); // Add this log
       return {
-        title: title + (desc ? `\n📍${desc}` : ''),
+        title: title,
         path: `/pages/orderDetail/orderDetail?id=${order.orderId}`,
-        imageUrl: '' // 留空使用小程序默认截图，也可替换为自定义图片路径
+        imageUrl: imageUrl
       };
     }
 
@@ -508,5 +517,14 @@ Page({
       path: '/pages/index/index',
       imageUrl: ''
     };
-  }
+  },
+
+  // 分享按钮点击事件（如果需要做额外处理）
+  onShareBtnTap(e) {
+    // 如果 onShareAppMessage 已经直接从 dataset 获取数据，这里可以不做任何操作
+    // 或者可以用于设置一个临时的全局变量，供非按钮分享使用
+    // this._shareOrder = e.currentTarget.dataset.order;
+    console.log('Share button tapped, order:', e.currentTarget.dataset.order);
+    // 这里的 console.log 是为了调试 onShareBtnTap 是否被调用
+  },
 });
